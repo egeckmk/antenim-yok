@@ -25,7 +25,15 @@ public sealed class SettingsStoreTests : IDisposable
     public void Flush_PersistsAndReloads()
     {
         var store = MakeStore();
-        store.Update(s => s with { LastStationId = "kafa-radyo", Volume = 0.8, IsMuted = true });
+        store.Update(s => s with
+        {
+            LastStationId = "kafa-radyo",
+            Volume = 0.8,
+            IsMuted = true,
+            Theme = AppTheme.Light,
+            CloseToTray = false,
+            MiniPlayerPosition = new WindowPosition(10, -20),
+        });
         store.Flush();
 
         var reloaded = MakeStore().Current;
@@ -33,6 +41,10 @@ public sealed class SettingsStoreTests : IDisposable
         Assert.Equal("kafa-radyo", reloaded.LastStationId);
         Assert.Equal(0.8, reloaded.Volume);
         Assert.True(reloaded.IsMuted);
+        Assert.Equal(AppTheme.Light, reloaded.Theme);
+        Assert.False(reloaded.CloseToTray);
+        Assert.Equal(new WindowPosition(10, -20), reloaded.MiniPlayerPosition);
+        Assert.Contains("\"light\"", File.ReadAllText(SettingsPath));
     }
 
     [Fact]

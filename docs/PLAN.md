@@ -31,12 +31,13 @@ Her sprint ≈ 1 akşam / 2–3 saat. Her sprint sonunda çalışan bir exe + k�
 - **Not:** Uygulama ikonu geçici (koyu kare + Fluent anten glifi, `Assets/AppIcon.ico`). Yeniden bağlanma birim testli; gerçek ağ kopması elle denenecek.
 
 ### Sprint 3 — Tasarım uygulaması
-- [ ] Mica, NavigationView, Favoriler ızgarası, Şimdi Çalıyor çubuğu
-- [ ] Açık/koyu tema, istasyon logoları (önbellekli) — logolar ✅ (pencere + medya penceresi, `%LOCALAPPDATA%/AntenimYok/logos`); açık tema henüz denenmedi
-- [ ] Kısayollar: Boşluk = çal/durdur, Ctrl+1..9 = favori, Ctrl+F = ara
-- [ ] Erişilebilirlik + ui-ux-pro-max WinUI kontrol listesi
-- [ ] Mini pencere (onaylandı, bkz. WIREFRAME.md)
-- [ ] Tepsi menüsünde favoriler (çalan işaretli)
+- [x] Mica, NavigationView (Favoriler / Keşfet / Ayarlar), TitleBar'da arama, Favoriler ızgarası (çalan kart vurgulu), Şimdi Çalıyor çubuğu
+- [x] Açık/koyu tema (Ayarlar → Tema: Sistem/Açık/Koyu), istasyon logoları (önbellekli, `%LOCALAPPDATA%/AntenimYok/logos`)
+- [x] Kısayollar: Boşluk = çal/durdur, Ctrl+1..9 = favori, Ctrl+F = ara, Ctrl+↑/↓ = ses, M = sessiz
+- [ ] Erişilebilirlik + ui-ux-pro-max WinUI kontrol listesi — adlar/tooltip, başlık seviyeleri, klavye ✅; Narrator turu + Accessibility Insights FastPass yapılmadı
+- [x] Mini pencere (her zaman üstte, önceki/durdur/sonraki + ses, konumu hatırlanır)
+- [x] Tepsi menüsünde favoriler (çalan işaretli) — menü görüntüsü elle kontrol edilecek
+- [x] Ayarlar: "kapatınca tepside çalmaya devam et", son açık bölüm hatırlanır
 
 ### Sprint 4 — İçerik
 - [ ] Keşfet: Radio Browser API (`countrycode=TR`, arama, tür) → favorilere ekle/çıkar

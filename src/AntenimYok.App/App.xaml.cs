@@ -17,6 +17,7 @@ namespace AntenimYok.App;
 public partial class App : Application
 {
     private MainWindow? _window;
+    private MiniPlayerWindow? _miniPlayer;
 
     public App()
     {
@@ -28,14 +29,17 @@ public partial class App : Application
 
     public IServiceProvider Services { get; }
 
+    private SettingsStore Settings => Services.GetRequiredService<SettingsStore>();
+
     protected override void OnLaunched(LaunchActivatedEventArgs args)
     {
-        _window = new MainWindow(Services.GetRequiredService<MainViewModel>(), Services.GetRequiredService<SettingsStore>());
+        _window = new MainWindow(Services.GetRequiredService<MainViewModel>(), Settings);
+        Services.GetRequiredService<ThemeService>().Register(_window);
         _window.Activate();
 
         // A second launch (see Program) lands here: bring the existing window back.
         var dispatcher = DispatcherQueue.GetForCurrentThread();
-        AppInstance.GetCurrent().Activated += (_, _) => dispatcher.TryEnqueue(() => _window?.ShowAndActivate());
+        AppInstance.GetCurrent().Activated += (_, _) => dispatcher.TryEnqueue(ShowMainWindow);
 
         // Network back (Wi-Fi reconnect, VPN, cable): a pending reconnect retries right away.
         var radio = Services.GetRequiredService<RadioPlayer>();
@@ -44,6 +48,49 @@ public partial class App : Application
             if (NetworkInterface.GetIsNetworkAvailable())
                 radio.NotifyNetworkAvailable();
         };
+    }
+
+    public void ShowMainWindow()
+    {
+        _miniPlayer?.HideAndRemember();
+        _window?.ShowAndActivate();
+    }
+
+    public void ShowMiniPlayer()
+    {
+        if (_miniPlayer is null)
+        {
+            _miniPlayer = new MiniPlayerWindow(Services.GetRequiredService<MainViewModel>(), Settings);
+            Services.GetRequiredService<ThemeService>().Register(_miniPlayer);
+        }
+        _window?.AppWindow.Hide();
+        _miniPlayer.ShowAndActivate();
+    }
+
+    /// <summary>The close (X) button of either window: hide to the tray, or quit if that is turned off.</summary>
+    public void CloseWindow(Window window)
+    {
+        if (!Settings.Current.CloseToTray)
+        {
+            ExitApp();
+            return;
+        }
+
+        if (window == _miniPlayer)
+            _miniPlayer.HideAndRemember();
+        else
+            window.AppWindow.Hide();
+        Settings.Flush();
+        _window?.ShowTrayHintOnce();
+    }
+
+    public void ExitApp()
+    {
+        Services.GetRequiredService<MainViewModel>().StopPlayback();
+        _miniPlayer?.HideAndRemember();
+        Settings.Flush();
+        _window?.DisposeTrayIcon();
+        Exit();
     }
 
     private static ServiceProvider ConfigureServices()
@@ -64,7 +111,9 @@ public partial class App : Application
         services.AddSingleton<IStreamPlayer>(sp => sp.GetRequiredService<MediaPlayerStreamPlayer>());
         services.AddSingleton<RadioPlayer>();
         services.AddSingleton<MediaControlsService>();
+        services.AddSingleton<ThemeService>();
         services.AddSingleton<MainViewModel>();
+        services.AddSingleton<SettingsViewModel>();
         return services.BuildServiceProvider();
     }
 }

@@ -4,7 +4,7 @@ using Microsoft.UI.Xaml.Media;
 
 namespace AntenimYok.App.ViewModels;
 
-/// <summary>A station in the list plus its (asynchronously loaded) logo.</summary>
+/// <summary>A station in the list plus its (asynchronously loaded) logo and playback highlight.</summary>
 public sealed partial class StationItem(Station station) : ObservableObject
 {
     public Station Station { get; } = station;
@@ -20,6 +20,10 @@ public sealed partial class StationItem(Station station) : ObservableObject
     public partial ImageSource? Logo { get; set; }
 
     public bool HasLogo => Logo is not null;
+
+    /// <summary>This station is connecting, playing or reconnecting.</summary>
+    [ObservableProperty]
+    public partial bool IsPlaying { get; set; }
 
     // List items use ToString for their accessible name (Narrator).
     public override string ToString() => Name;

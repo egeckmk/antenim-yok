@@ -18,6 +18,8 @@ namespace AntenimYok.App.ViewModels;
 
 public sealed partial class MainViewModel : ObservableObject
 {
+    private const double VolumeStep = 5;
+
     private readonly StationRepository _repository;
     private readonly RadioPlayer _player;
     private readonly SettingsStore _settings;
@@ -48,7 +50,11 @@ public sealed partial class MainViewModel : ObservableObject
         _player.IsMuted = settings.Current.IsMuted;
     }
 
+    /// <summary>Favorites, in order (Ctrl+1…9, next/previous).</summary>
     public ObservableCollection<StationItem> Stations { get; } = [];
+
+    /// <summary><see cref="Stations"/> filtered by <see cref="SearchText"/>.</summary>
+    public ObservableCollection<StationItem> VisibleStations { get; } = [];
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(HasStation), nameof(StationName), nameof(CurrentItem), nameof(StatusText), nameof(TrayToolTip))]
@@ -74,6 +80,13 @@ public sealed partial class MainViewModel : ObservableObject
     [ObservableProperty]
     public partial bool LoadFailed { get; private set; }
 
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(NoResultsText))]
+    public partial string SearchText { get; set; } = string.Empty;
+
+    [ObservableProperty]
+    public partial bool HasNoResults { get; private set; }
+
     public bool HasStation => CurrentStation is not null;
     public bool IsConnecting => State is PlaybackState.Connecting or PlaybackState.Reconnecting;
     public bool IsActive => State is PlaybackState.Connecting or PlaybackState.Playing or PlaybackState.Reconnecting;
@@ -88,9 +101,11 @@ public sealed partial class MainViewModel : ObservableObject
         PlaybackState.Reconnecting => "Bağlantı koptu, yeniden bağlanıyor…",
         PlaybackState.Playing => FormatStream(CurrentStream),
         PlaybackState.Error => "Yayına ulaşılamadı",
-        _ when CurrentStation is null => "Çalmak için listeden bir istasyona tıklayın",
+        _ when CurrentStation is null => "Çalmak için bir istasyona tıklayın",
         _ => "Durduruldu",
     };
+
+    public string NoResultsText => $"“{SearchText.Trim()}” ile eşleşen istasyon yok.";
 
     public string TrayToolTip => CurrentStation is { } station && IsActive
         ? $"Antenim Yok — {station.Name}"
@@ -115,6 +130,7 @@ public sealed partial class MainViewModel : ObservableObject
                 Stations.Add(item);
                 _ = LoadLogoAsync(item);
             }
+            ApplyFilter();
 
             // Show the last station in the bar (not auto-playing).
             CurrentStation ??= stations.FirstOrDefault(s => s.Id == _settings.Current.LastStationId);
@@ -173,7 +189,22 @@ public sealed partial class MainViewModel : ObservableObject
     }
 
     [RelayCommand]
+    private Task PlayNextAsync() => PlayRelativeAsync(+1);
+
+    [RelayCommand]
+    private Task PlayPreviousAsync() => PlayRelativeAsync(-1);
+
+    /// <summary>Ctrl+1…9: the n-th favorite (0-based index).</summary>
+    public async Task PlayFavoriteAsync(int index)
+    {
+        if (index >= 0 && index < Stations.Count)
+            await _player.PlayAsync(Stations[index].Station);
+    }
+
+    [RelayCommand]
     private void ToggleMute() => IsMuted = !IsMuted;
+
+    public void ChangeVolume(int direction) => Volume = Math.Clamp(Volume + direction * VolumeStep, 0, 100);
 
     public void StopPlayback() => _player.Stop();
 
@@ -207,6 +238,20 @@ public sealed partial class MainViewModel : ObservableObject
         await _player.PlayAsync(next.Station);
     }
 
+    partial void OnSearchTextChanged(string value) => ApplyFilter();
+
+    private void ApplyFilter()
+    {
+        var matches = Stations.Where(i => StationSearch.Matches(i.Station, SearchText)).ToList();
+        if (!matches.SequenceEqual(VisibleStations))
+        {
+            VisibleStations.Clear();
+            foreach (var item in matches)
+                VisibleStations.Add(item);
+        }
+        HasNoResults = Stations.Count > 0 && matches.Count == 0;
+    }
+
     partial void OnVolumeChanged(double value)
     {
         _player.Volume = value / 100;
@@ -223,12 +268,17 @@ public sealed partial class MainViewModel : ObservableObject
 
     private void SyncFromPlayer()
     {
-        CurrentStation = _player.CurrentStation ?? CurrentStation;
+        // Item flags first: State/CurrentStation listeners (tray menu) read them.
+        var station = _player.CurrentStation ?? CurrentStation;
+        foreach (var item in Stations)
+            item.IsPlaying = _player.IsActive && item.Station == station;
+
+        CurrentStation = station;
         CurrentStream = _player.CurrentStream;
         State = _player.State;
         OnPropertyChanged(nameof(StatusText));
 
-        if (State == PlaybackState.Playing && CurrentStation is { } station)
+        if (State == PlaybackState.Playing && station is not null)
             _settings.Update(s => s with { LastStationId = station.Id });
     }
 

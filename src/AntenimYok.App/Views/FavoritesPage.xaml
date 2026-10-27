@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="AntenimYok.App.Views.FavoritesPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:AntenimYok.App.Controls"
+    xmlns:vm="using:AntenimYok.App.ViewModels"
+    Background="Transparent">
+
+    <Grid RowDefinitions="Auto,*">
+        <TextBlock
+            Margin="36,24,36,12"
+            AutomationProperties.HeadingLevel="Level1"
+            Style="{StaticResource TitleTextBlockStyle}"
+            Text="Favoriler" />
+
+        <GridView
+            x:Name="StationGrid"
+            Grid.Row="1"
+            Padding="32,0,32,24"
+            AutomationProperties.Name="Favori istasyonlar"
+            IsItemClickEnabled="True"
+            ItemClick="OnStationClick"
+            ItemsSource="{x:Bind ViewModel.VisibleStations}"
+            SelectionMode="None">
+            <GridView.ItemTemplate>
+                <DataTemplate x:DataType="vm:StationItem">
+                    <StackPanel
+                        Width="112"
+                        Padding="0,8"
+                        AutomationProperties.Name="{x:Bind Name}"
+                        Spacing="8"
+                        ToolTipService.ToolTip="{x:Bind Name}">
+                        <Grid Width="96" Height="96">
+                            <controls:StationLogo
+                                CornerRadius="{StaticResource OverlayCornerRadius}"
+                                InitialsStyle="{StaticResource SubtitleTextBlockStyle}"
+                                Item="{x:Bind}" />
+                            <!--  Playing: accent ring + speaker badge (static, no motion)  -->
+                            <Border
+                                BorderBrush="{ThemeResource AccentFillColorDefaultBrush}"
+                                BorderThickness="2"
+                                CornerRadius="{StaticResource OverlayCornerRadius}"
+                                Visibility="{x:Bind IsPlaying, Mode=OneWay}" />
+                            <Border
+                                Width="24"
+                                Height="24"
+                                Margin="0,-6,-6,0"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Top"
+                                Background="{ThemeResource AccentFillColorDefaultBrush}"
+                                CornerRadius="12"
+                                Visibility="{x:Bind IsPlaying, Mode=OneWay}">
+                                <FontIcon
+                                    FontSize="12"
+                                    Foreground="{ThemeResource TextOnAccentFillColorPrimaryBrush}"
+                                    Glyph="&#xE995;" />
+                            </Border>
+                        </Grid>
+                        <TextBlock
+                            HorizontalAlignment="Center"
+                            Style="{StaticResource BodyTextBlockStyle}"
+                            Text="{x:Bind Name}"
+                            TextTrimming="CharacterEllipsis"
+                            TextWrapping="NoWrap" />
+                    </StackPanel>
+                </DataTemplate>
+            </GridView.ItemTemplate>
+        </GridView>
+
+        <!--  Empty search result  -->
+        <StackPanel
+            Grid.Row="1"
+            Margin="36,24"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Top"
+            Spacing="12"
+            Visibility="{x:Bind ViewModel.HasNoResults, Mode=OneWay}">
+            <TextBlock
+                HorizontalAlignment="Center"
+                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                Style="{StaticResource BodyTextBlockStyle}"
+                Text="{x:Bind ViewModel.NoResultsText, Mode=OneWay}"
+                TextAlignment="Center"
+                TextWrapping="Wrap" />
+            <Button
+                HorizontalAlignment="Center"
+                Click="OnClearSearch"
+                Content="Aramayı temizle" />
+        </StackPanel>
+    </Grid>
+</Page>

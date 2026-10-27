@@ -4,104 +4,111 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="using:AntenimYok.App.Controls"
-    xmlns:vm="using:AntenimYok.App.ViewModels"
     xmlns:tb="using:H.NotifyIcon"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
     Title="Antenim Yok">
 
     <Window.SystemBackdrop>
         <MicaBackdrop />
     </Window.SystemBackdrop>
 
-    <Grid x:Name="Root" RowDefinitions="Auto,Auto,*,Auto">
+    <Grid
+        x:Name="Root"
+        KeyboardAcceleratorPlacementMode="Hidden"
+        RowDefinitions="Auto,*,Auto">
 
-        <!--  Tray icon: left click opens the window, right click shows the menu  -->
+        <!--  Tray icon: left click opens the window, right click shows favorites + actions (built in code)  -->
         <tb:TaskbarIcon
             x:Name="TrayIcon"
-            LeftClickCommand="{x:Bind ShowAndActivateCommand}"
+            LeftClickCommand="{x:Bind ShowMainWindowCommand}"
             NoLeftClickDelay="True"
             ToolTipText="{x:Bind ViewModel.TrayToolTip, Mode=OneWay}">
             <tb:TaskbarIcon.ContextFlyout>
-                <MenuFlyout>
-                    <MenuFlyoutItem Command="{x:Bind ShowAndActivateCommand}" Text="Göster" />
-                    <MenuFlyoutItem Command="{x:Bind ViewModel.TogglePlaybackCommand}" Text="{x:Bind ViewModel.PlayStopLabel, Mode=OneWay}" />
-                    <MenuFlyoutSeparator />
-                    <MenuFlyoutItem Command="{x:Bind ExitCommand}" Text="Çıkış" />
-                </MenuFlyout>
+                <MenuFlyout x:Name="TrayMenu" />
             </tb:TaskbarIcon.ContextFlyout>
         </tb:TaskbarIcon>
 
-        <TextBlock
-            Margin="24,16,24,12"
-            AutomationProperties.HeadingLevel="Level1"
-            Style="{StaticResource TitleTextBlockStyle}"
-            Text="İstasyonlar" />
+        <TitleBar
+            x:Name="AppTitleBar"
+            Title="Antenim Yok"
+            IsPaneToggleButtonVisible="True"
+            PaneToggleRequested="OnPaneToggleRequested">
+            <TitleBar.IconSource>
+                <ImageIconSource ImageSource="ms-appx:///Assets/AppIcon.png" />
+            </TitleBar.IconSource>
+            <AutoSuggestBox
+                x:Name="SearchBox"
+                MinWidth="240"
+                MaxWidth="400"
+                VerticalAlignment="Center"
+                AutomationProperties.Name="İstasyon ara"
+                PlaceholderText="İstasyon ara (Ctrl+F)"
+                QueryIcon="Find"
+                Text="{x:Bind ViewModel.SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                TextChanged="OnSearchTextChanged" />
+        </TitleBar>
 
-        <StackPanel Grid.Row="1" Margin="24,0,24,12" Spacing="8">
-            <InfoBar
-                Title="Yayına ulaşılamadı"
-                IsClosable="False"
-                IsOpen="{x:Bind ViewModel.HasError, Mode=OneWay}"
-                Message="İstasyonun hiçbir akışı açılmadı. İnternet bağlantınızı kontrol edip tekrar deneyin ya da başka bir istasyon seçin."
-                Severity="Error">
-                <InfoBar.ActionButton>
-                    <Button Command="{x:Bind ViewModel.RetryCommand}" Content="Tekrar dene" />
-                </InfoBar.ActionButton>
-            </InfoBar>
-            <InfoBar
-                Title="İstasyon listesi yüklenemedi"
-                IsClosable="False"
-                IsOpen="{x:Bind ViewModel.LoadFailed, Mode=OneWay}"
-                Severity="Error">
-                <InfoBar.ActionButton>
-                    <Button Command="{x:Bind ViewModel.LoadCommand}" Content="Tekrar dene" />
-                </InfoBar.ActionButton>
-            </InfoBar>
-        </StackPanel>
+        <NavigationView
+            x:Name="NavView"
+            Grid.Row="1"
+            IsBackButtonVisible="Collapsed"
+            IsPaneToggleButtonVisible="False"
+            IsSettingsVisible="False"
+            PaneDisplayMode="Auto"
+            SelectionChanged="OnNavigationSelectionChanged">
+            <NavigationView.MenuItems>
+                <NavigationViewItem Content="Favoriler" Tag="favorites">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE734;" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem Content="Keşfet" Tag="discover">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE909;" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+            </NavigationView.MenuItems>
+            <NavigationView.FooterMenuItems>
+                <NavigationViewItem Content="Ayarlar" Tag="settings">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE713;" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+            </NavigationView.FooterMenuItems>
 
-        <GridView
-            Grid.Row="2"
-            Padding="20,0,20,24"
-            AutomationProperties.Name="İstasyonlar"
-            IsItemClickEnabled="True"
-            ItemClick="OnStationClick"
-            ItemsSource="{x:Bind ViewModel.Stations}"
-            SelectionMode="None">
-            <GridView.ItemTemplate>
-                <DataTemplate x:DataType="vm:StationItem">
-                    <StackPanel
-                        Width="112"
-                        Padding="0,8"
-                        AutomationProperties.Name="{x:Bind Name}"
-                        Spacing="8"
-                        ToolTipService.ToolTip="{x:Bind Name}">
-                        <controls:StationLogo
-                            Width="96"
-                            Height="96"
-                            CornerRadius="{StaticResource OverlayCornerRadius}"
-                            InitialsStyle="{StaticResource SubtitleTextBlockStyle}"
-                            Item="{x:Bind}" />
-                        <TextBlock
-                            HorizontalAlignment="Center"
-                            Style="{StaticResource BodyTextBlockStyle}"
-                            Text="{x:Bind Name}"
-                            TextTrimming="CharacterEllipsis"
-                            TextWrapping="NoWrap" />
-                    </StackPanel>
-                </DataTemplate>
-            </GridView.ItemTemplate>
-        </GridView>
+            <Grid RowDefinitions="Auto,*">
+                <StackPanel Margin="36,16,36,0" Spacing="8">
+                    <InfoBar
+                        Title="Yayına ulaşılamadı"
+                        IsClosable="False"
+                        IsOpen="{x:Bind ViewModel.HasError, Mode=OneWay}"
+                        Message="İstasyonun hiçbir akışı açılmadı. İnternet bağlantını kontrol edip tekrar dene ya da başka bir istasyon seç."
+                        Severity="Error">
+                        <InfoBar.ActionButton>
+                            <Button Command="{x:Bind ViewModel.RetryCommand}" Content="Tekrar dene" />
+                        </InfoBar.ActionButton>
+                    </InfoBar>
+                    <InfoBar
+                        Title="İstasyon listesi yüklenemedi"
+                        IsClosable="False"
+                        IsOpen="{x:Bind ViewModel.LoadFailed, Mode=OneWay}"
+                        Severity="Error">
+                        <InfoBar.ActionButton>
+                            <Button Command="{x:Bind ViewModel.LoadCommand}" Content="Tekrar dene" />
+                        </InfoBar.ActionButton>
+                    </InfoBar>
+                </StackPanel>
+                <Frame x:Name="ContentFrame" Grid.Row="1" />
+            </Grid>
+        </NavigationView>
 
-        <!--  Now Playing bar  -->
+        <!--  Now Playing bar (visible on every page)  -->
         <Grid
-            Grid.Row="3"
+            Grid.Row="2"
             Padding="24,12"
             Background="{ThemeResource LayerFillColorDefaultBrush}"
             BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
             BorderThickness="0,1,0,0"
-            ColumnDefinitions="Auto,*,Auto,Auto"
+            ColumnDefinitions="Auto,*,Auto,Auto,Auto"
             ColumnSpacing="12">
 
             <controls:StationLogo
@@ -146,6 +153,7 @@
             </Grid>
 
             <StackPanel
+                x:Name="VolumePanel"
                 Grid.Column="3"
                 VerticalAlignment="Center"
                 Orientation="Horizontal"
@@ -166,6 +174,35 @@
                     StepFrequency="1"
                     Value="{x:Bind ViewModel.Volume, Mode=TwoWay}" />
             </StackPanel>
+
+            <Button
+                Grid.Column="4"
+                VerticalAlignment="Center"
+                AutomationProperties.Name="Mini oynatıcı"
+                Command="{x:Bind ShowMiniPlayerCommand}"
+                Style="{StaticResource SubtleButtonStyle}"
+                ToolTipService.ToolTip="Mini oynatıcı">
+                <FontIcon Glyph="&#xEE49;" />
+            </Button>
         </Grid>
+
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+                <!--  Narrow window: drop the volume slider (media keys / mute still work)  -->
+                <VisualState x:Name="Narrow">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="0" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="VolumePanel.Visibility" Value="Collapsed" />
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="Wide">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="560" />
+                    </VisualState.StateTriggers>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
     </Grid>
 </Window>
