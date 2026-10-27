@@ -9,7 +9,7 @@ Her sprint ≈ 1 akşam / 2–3 saat. Her sprint sonunda çalışan bir exe + k�
 - [x] İstasyon listesi (9): Alem FM, Best FM, Show Radyo, Power FM, Metro FM, Virgin Radio Türkiye, Power Türk, Radyo Fenomen, Kafa Radyo
 - [x] Akış URL'leri bulundu → [stations.json](stations.json) v1 (9 istasyon, yedek akışlı; `unverified` olanlar Sprint 1'de denenecek; Power Türk, Fenomen, Kafa logosu yok)
 - [x] Uygulamanın adı: **Antenim Yok** ✅ (repo: `antenim-yok`)
-- [ ] Ana pencere + mini pencere + tepsi menüsü wireframe'i (onay)
+- [x] Ana pencere + mini pencere + tepsi menüsü wireframe'i (onay) → [WIREFRAME.md](WIREFRAME.md)
 - [x] GitHub'da kişisel repo `egeckmk/antenim-yok`, solution iskeleti (App net10 paketsiz/self-contained x64 + Core + Tests)
 - [x] `native-app-ui` skill'ini repoya `.claude/skills/` altına kopyala
 
@@ -35,7 +35,8 @@ Her sprint ≈ 1 akşam / 2–3 saat. Her sprint sonunda çalışan bir exe + k�
 - [ ] Açık/koyu tema, istasyon logoları (önbellekli) — logolar ✅ (pencere + medya penceresi, `%LOCALAPPDATA%/AntenimYok/logos`); açık tema henüz denenmedi
 - [ ] Kısayollar: Boşluk = çal/durdur, Ctrl+1..9 = favori, Ctrl+F = ara
 - [ ] Erişilebilirlik + ui-ux-pro-max WinUI kontrol listesi
-- [ ] Mini pencere (opsiyonel)
+- [ ] Mini pencere (onaylandı, bkz. WIREFRAME.md)
+- [ ] Tepsi menüsünde favoriler (çalan işaretli)
 
 ### Sprint 4 — İçerik
 - [ ] Keşfet: Radio Browser API (`countrycode=TR`, arama, tür) → favorilere ekle/çıkar
