@@ -4,6 +4,7 @@ using System.Runtime.InteropServices;
 using AntenimYok.Core.Playback;
 using AntenimYok.Core.Stations;
 using Microsoft.Extensions.Logging;
+using Microsoft.UI.Dispatching;
 using Windows.Media;
 using Windows.Storage;
 using Windows.Storage.Streams;
@@ -29,6 +30,7 @@ public sealed class MediaControlsService(RadioPlayer radio, LogoCache logos, ILo
     private static readonly Guid SystemMediaTransportControlsIid = new("99FA3FF4-1742-42A6-902E-087D41F965EC");
 
     private SystemMediaTransportControls? _controls;
+    private DispatcherQueue? _dispatcher;
     private Station? _shownStation;
 
     /// <summary>Raised on a background thread.</summary>
@@ -37,6 +39,7 @@ public sealed class MediaControlsService(RadioPlayer radio, LogoCache logos, ILo
     /// <summary>Creates the session for <paramref name="windowHandle"/>; call once the main window exists.</summary>
     public void Attach(IntPtr windowHandle)
     {
+        _dispatcher = DispatcherQueue.GetForCurrentThread();
         var interop = SystemMediaTransportControls.As<ISystemMediaTransportControlsInterop>();
         var iid = SystemMediaTransportControlsIid;
         var abi = interop.GetForWindow(windowHandle, ref iid);
@@ -55,9 +58,23 @@ public sealed class MediaControlsService(RadioPlayer radio, LogoCache logos, ILo
         _controls.IsNextEnabled = true;
         _controls.IsPreviousEnabled = true;
         _controls.ButtonPressed += OnButtonPressed;
-        radio.StateChanged += (_, _) => Update();
+        radio.StateChanged += OnRadioStateChanged;
         Update();
     }
+
+    /// <summary>Drops the session before the window it belongs to goes away (on exit).</summary>
+    public void Detach()
+    {
+        if (_controls is null)
+            return;
+        radio.StateChanged -= OnRadioStateChanged;
+        _controls.ButtonPressed -= OnButtonPressed;
+        _controls.IsEnabled = false;
+        _controls = null;
+    }
+
+    // RadioPlayer may raise this on a background thread; the window-bound session is used from the UI thread only.
+    private void OnRadioStateChanged(object? sender, EventArgs e) => _dispatcher?.TryEnqueue(Update);
 
     private void OnButtonPressed(SystemMediaTransportControls sender, SystemMediaTransportControlsButtonPressedEventArgs args)
     {

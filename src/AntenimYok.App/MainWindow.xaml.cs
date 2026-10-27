@@ -39,10 +39,11 @@ public sealed partial class MainWindow : Window
             presenter.PreferredMinimumHeight = 420;
         }
         AppWindow.Closing += OnClosing;
+        Activated += OnActivated;
 
         AddKeyboardShortcuts();
         ViewModel.PropertyChanged += OnViewModelPropertyChanged;
-        ViewModel.Stations.CollectionChanged += (_, _) => RebuildTrayMenu();
+        ViewModel.Stations.CollectionChanged += OnStationsChanged;
         RebuildTrayMenu();
 
         ViewModel.LoadCommand.Execute(null);
@@ -75,10 +76,33 @@ public sealed partial class MainWindow : Window
             "Görev çubuğundaki simgeden yeniden açabilir veya çıkabilirsin.");
     }
 
-    public void DisposeTrayIcon() => TrayIcon.Dispose();
+    /// <summary>
+    /// On exit: stop following the view model and take the icon out of the tray.
+    /// Collapsing removes it; TaskbarIcon.Dispose() after something had played crashed the process
+    /// natively (CoreMessagingXP, 0xc000027b) on every exit.
+    /// </summary>
+    public void RemoveTrayIcon()
+    {
+        Bindings.StopTracking();
+        ViewModel.PropertyChanged -= OnViewModelPropertyChanged;
+        ViewModel.Stations.CollectionChanged -= OnStationsChanged;
+        TrayIcon.Visibility = Visibility.Collapsed;
+    }
+
+    private void OnStationsChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e) => RebuildTrayMenu();
+
+    // Clicking the media card in Quick Settings activates the window the media session belongs to (this one),
+    // even while it is hidden in the tray. Come back instead of staying invisible.
+    private void OnActivated(object sender, WindowActivatedEventArgs args)
+    {
+        if (args.WindowActivationState != WindowActivationState.Deactivated && !AppWindow.IsVisible)
+            DispatcherQueue.TryEnqueue(App.Current.ShowFromMediaCard);
+    }
 
     private void OnClosing(AppWindow sender, AppWindowClosingEventArgs args)
     {
+        if (App.Current.IsExiting)
+            return;
         args.Cancel = true;
         App.Current.CloseWindow(this);
     }

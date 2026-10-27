@@ -57,6 +57,8 @@ public sealed partial class MiniPlayerWindow : Window
 
     private void OnClosing(AppWindow sender, AppWindowClosingEventArgs args)
     {
+        if (App.Current.IsExiting)
+            return;
         args.Cancel = true;
         App.Current.CloseWindow(this);
     }

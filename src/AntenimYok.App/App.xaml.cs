@@ -23,6 +23,25 @@ public partial class App : Application
     {
         InitializeComponent();
         Services = ConfigureServices();
+        UnhandledException += (_, e) => WriteCrashLog(e.Exception);
+        AppDomain.CurrentDomain.UnhandledException += (_, e) => WriteCrashLog(e.ExceptionObject as Exception);
+        System.Threading.Tasks.TaskScheduler.UnobservedTaskException += (_, e) => WriteCrashLog(e.Exception);
+    }
+
+    /// <summary>%LOCALAPPDATA%\AntenimYok\crash.log — the Debug logger is gone once the process dies.</summary>
+    private static void WriteCrashLog(Exception? exception)
+    {
+        try
+        {
+            var dir = System.IO.Path.GetDirectoryName(SettingsStore.DefaultPath)!;
+            System.IO.Directory.CreateDirectory(dir);
+            System.IO.File.AppendAllText(System.IO.Path.Combine(dir, "crash.log"),
+                $"{DateTime.Now:yyyy-MM-dd HH:mm:ss} {exception}{Environment.NewLine}{Environment.NewLine}");
+        }
+        catch
+        {
+            // Nothing left to report to.
+        }
     }
 
     public static new App Current => (App)Application.Current;
@@ -65,6 +84,15 @@ public partial class App : Application
         _window?.ShowAndActivate();
     }
 
+    /// <summary>Media card clicked while the main window is hidden: bring back whichever player is in use.</summary>
+    public void ShowFromMediaCard()
+    {
+        if (_miniPlayer?.AppWindow.IsVisible == true)
+            _miniPlayer.Activate();
+        else
+            ShowMainWindow();
+    }
+
     public void ShowMiniPlayer()
     {
         if (_miniPlayer is null)
@@ -76,12 +104,16 @@ public partial class App : Application
         _miniPlayer.ShowAndActivate();
     }
 
+    /// <summary>Set while quitting: windows then really close instead of hiding to the tray.</summary>
+    public bool IsExiting { get; private set; }
+
     /// <summary>The close (X) button of either window: hide to the tray, or quit if that is turned off.</summary>
     public void CloseWindow(Window window)
     {
         if (!Settings.Current.CloseToTray)
         {
-            ExitApp();
+            // Not from inside the Closing event that called us.
+            DispatcherQueue.GetForCurrentThread().TryEnqueue(ExitApp);
             return;
         }
 
@@ -93,12 +125,24 @@ public partial class App : Application
         _window?.ShowTrayHintOnce();
     }
 
+    /// <summary>
+    /// Quit in order: stop audio, drop the window-bound media session, remove the tray icon,
+    /// close every window, then exit.
+    /// </summary>
     public void ExitApp()
     {
+        if (IsExiting)
+            return;
+        IsExiting = true;
+
         Services.GetRequiredService<MainViewModel>().StopPlayback();
+        Services.GetRequiredService<MediaControlsService>().Detach();
         _miniPlayer?.HideAndRemember();
         Settings.Flush();
-        _window?.DisposeTrayIcon();
+
+        _window?.RemoveTrayIcon();
+        _miniPlayer?.Close();
+        _window?.Close();
         Exit();
     }
 
