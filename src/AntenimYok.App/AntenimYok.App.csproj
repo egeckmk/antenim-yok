@@ -33,6 +33,12 @@
     <PackageReference Include="H.NotifyIcon.WinUI" Version="2.4.1" />
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.28000.2705" />
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="2.5.1" />
+    <!-- Unused parts of the Windows App SDK metapackage (AI, ML incl. ONNX/DirectML, search, widgets): kept out of the build. -->
+    <PackageReference Include="Microsoft.WindowsAppSDK.AI" Version="2.5.5" ExcludeAssets="all" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.WindowsAppSDK.ML" Version="2.1.94" ExcludeAssets="all" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.Windows.AI.MachineLearning" Version="2.1.74" ExcludeAssets="all" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.WindowsAppSDK.Search" Version="2.5.5" ExcludeAssets="all" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.WindowsAppSDK.Widgets" Version="2.0.5" ExcludeAssets="all" PrivateAssets="all" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.0" />
@@ -49,4 +55,13 @@
     <!-- Trimming is not safe with WinUI. -->
     <PublishTrimmed>False</PublishTrimmed>
   </PropertyGroup>
+
+  <!--
+    Unpackaged publish leaves out the app's own resource index (compiled XAML); without it the
+    published app fails with "XAML parsing failed" on the first window.
+  -->
+  <Target Name="PublishAppResourceIndex" AfterTargets="Publish">
+    <Copy SourceFiles="$(OutDir)$(TargetName).pri" DestinationFolder="$(PublishDir)" Condition="Exists('$(OutDir)$(TargetName).pri')" />
+    <Error Text="$(TargetName).pri was not published; the app would not start." Condition="!Exists('$(PublishDir)$(TargetName).pri')" />
+  </Target>
 </Project>
