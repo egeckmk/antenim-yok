@@ -44,7 +44,9 @@ Kütüphane değil, kişisel bir uygulama olduğu için "uyumluluk" = **Ege'nin 
 5. Commit: `Release x.y.z` (gövdeye öne çıkanlar).
 6. Annotated tag: `git tag -a vx.y.z -m "x.y.z"` — tag her zaman `v` ön ekli, sürüm commit'inin üstünde.
 7. Push: `git push` ve `git push origin vx.y.z` (tag'ler ayrıca gönderilir).
-8. Sprint 5 sonrası: yayın klasörü/zip adı sürümü içerir (`AntenimYok-x.y.z-win-x64.zip`).
+8. Paket ve GitHub Release: `.\scripts\publish.ps1 -Upload` (Velopack; `$env:GITHUB_TOKEN` gerekir, Ege'den iste).
+   Release adı `Antenim Yok x.y.z`, tag `vx.y.z`; açıklamaya CHANGELOG'daki o sürümün maddelerini koy.
+   Kurulu uygulamalar bu Release'i birkaç saat içinde kendiliğinden indirir — yayınlamadan önce `-Install` ile bu PC'de dene.
 
 ## Yapma
 - Tag'i taşıma/silme veya yayınlanmış bir sürümü yeniden kullanma; hata varsa yeni PATCH çıkar.

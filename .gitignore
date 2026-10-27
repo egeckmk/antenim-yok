@@ -29,3 +29,6 @@ DerivedData/
 .DS_Store
 Thumbs.db
 src/AntenimYok.App/*.slnx
+
+# Release output (scripts/publish.ps1)
+artifacts/

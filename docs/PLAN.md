@@ -45,9 +45,11 @@ Her sprint ≈ 1 akşam / 2–3 saat. Her sprint sonunda çalışan bir exe + k�
 - [x] ~~`stations.json`'u GitHub/Gist'ten çek~~ — vazgeçildi: favoriler yerelde ve boş başlar, `data/stations.json` repodan kaldırıldı
 
 ### Sprint 5 — Paketleme
-- [ ] `dotnet publish` self-contained (WindowsAppSDKSelfContained), kullanıcı klasörüne kurulum, admin yok
-- [ ] Windows ile başlat (opsiyonel)
-- [ ] Güncelleme yolu (GitHub Release'ten yeni zip) + README
+- [x] `dotnet publish` self-contained → Velopack `Setup.exe` (`scripts/publish.ps1`), `%LOCALAPPDATA%\Ege.AntenimYok`, admin yok;
+      yayın çıktısındaki eksik `.pri` düzeltildi, kullanılmayan SDK parçaları atıldı (275 → 220 MB, kurulum 92 MB)
+- [x] Windows ile başlat (Ayarlar; HKCU Run, `--background` → pencere açmadan tepside)
+- [x] Otomatik güncelleme: Velopack + GitHub Releases (açılışta ve 6 saatte bir; "Yeniden başlat" bilgi çubuğu). Repo public olunca çalışır
+- [ ] README (ekran görüntüleri, kurulum) → sonra repo public
 
 ### Sonra — Apple (SwiftUI Multiplatform)
 - [ ] A1 çalan MVP (AVPlayer, arka plan ses) · A2 kilit ekranı/AirPods + Mac menü çubuğu · A3 tasarım + widget · A4 Siri/Kestirmeler, iCloud favoriler

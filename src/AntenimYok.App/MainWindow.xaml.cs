@@ -66,6 +66,16 @@ public sealed partial class MainWindow : Window
         Activate();
     }
 
+    /// <summary>
+    /// Started with Windows: never show the window, only the tray icon. The icon normally appears when the
+    /// window's content loads, and x:Bind starts on first activation — both are done by hand here.
+    /// </summary>
+    public void StartInTray()
+    {
+        Bindings.Update();
+        TrayIcon.ForceCreate(enablesEfficiencyMode: false);
+    }
+
     /// <summary>Hidden to the tray: tell once per session that the radio keeps playing.</summary>
     public void ShowTrayHintOnce()
     {

@@ -58,6 +58,13 @@ internal static partial class AppIdentity
         ((IPersistFile)link).Save(ShortcutPath, true);
     }
 
+    /// <summary>Uninstall: the shortcut is ours, not Velopack's, so we remove it.</summary>
+    public static void RemoveStartMenuShortcut()
+    {
+        if (File.Exists(ShortcutPath))
+            File.Delete(ShortcutPath);
+    }
+
     [LibraryImport("shell32.dll", StringMarshalling = StringMarshalling.Utf16)]
     private static partial int SetCurrentProcessExplicitAppUserModelID(string appId);
 

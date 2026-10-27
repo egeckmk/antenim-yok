@@ -87,6 +87,15 @@
                             <Button Command="{x:Bind ViewModel.RetryCommand}" Content="Tekrar dene" />
                         </InfoBar.ActionButton>
                     </InfoBar>
+                    <InfoBar
+                        Title="Güncelleme hazır"
+                        IsOpen="{x:Bind ViewModel.IsUpdateReady, Mode=OneWay}"
+                        Message="{x:Bind ViewModel.UpdateReadyMessage, Mode=OneWay}"
+                        Severity="Informational">
+                        <InfoBar.ActionButton>
+                            <Button Command="{x:Bind ViewModel.RestartToUpdateCommand}" Content="Yeniden başlat" />
+                        </InfoBar.ActionButton>
+                    </InfoBar>
                 </StackPanel>
                 <Frame x:Name="ContentFrame" Grid.Row="1" />
             </Grid>

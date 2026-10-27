@@ -6,6 +6,21 @@ Biçim [Keep a Changelog](https://keepachangelog.com/tr-TR/1.1.0/), sürümleme 
 
 ## [Yayınlanmadı]
 
+## [1.0.0] - 2026-10-27
+
+İlk kurulabilir sürüm.
+
+### Eklendi
+- Kurulum dosyası (`Setup.exe`): yönetici izni istemez, "Uygulamalar"dan kaldırılabilir; favoriler ve ayarlar kaldırmada silinmez.
+- Otomatik güncelleme: yeni sürüm arka planda iner, "Yeniden başlat" ile ya da bir sonraki açılışta yüklenir. Ayarlar → Hakkında'da "Güncellemeleri denetle".
+- "Windows açılınca başlat" ayarı: oturum açınca pencere açmadan tepside başlar.
+
+### Değişti
+- Uygulama dosyası artık `AntenimYok.exe`; kurulum boyutu küçüldü.
+
+### Düzeltildi
+- Yayın (paketlenmiş) sürümünün açılır açılmaz kapanması.
+
 ## [0.4.0] - 2026-10-27
 
 ### Eklendi
@@ -57,7 +72,8 @@ Biçim [Keep a Changelog](https://keepachangelog.com/tr-TR/1.1.0/), sürümleme 
 - Bağlanıyor / çalıyor / "yayına ulaşılamadı" durumları.
 - `.pls` / `.m3u` çalma listelerini çözme.
 
-[Yayınlanmadı]: https://github.com/egeckmk/antenim-yok/compare/v0.4.0...HEAD
+[Yayınlanmadı]: https://github.com/egeckmk/antenim-yok/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/egeckmk/antenim-yok/compare/v0.4.0...v1.0.0
 [0.4.0]: https://github.com/egeckmk/antenim-yok/compare/v0.3.1...v0.4.0
 [0.3.1]: https://github.com/egeckmk/antenim-yok/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/egeckmk/antenim-yok/compare/v0.2.0...v0.3.0

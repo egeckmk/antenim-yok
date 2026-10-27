@@ -65,6 +65,24 @@
                         OnContent="Açık" />
                 </Grid>
             </Border>
+            <Border Style="{StaticResource SettingsCardStyle}">
+                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16">
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock Style="{StaticResource BodyTextBlockStyle}" Text="Windows açılınca başlat" />
+                        <TextBlock
+                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                            Style="{StaticResource CaptionTextBlockStyle}"
+                            Text="Oturum açınca pencere açmadan tepside başlar; çalmaya kendin başlarsın."
+                            TextWrapping="Wrap" />
+                    </StackPanel>
+                    <ToggleSwitch
+                        Grid.Column="1"
+                        AutomationProperties.Name="Windows açılınca başlat"
+                        IsOn="{x:Bind ViewModel.StartWithWindows, Mode=TwoWay}"
+                        OffContent="Kapalı"
+                        OnContent="Açık" />
+                </Grid>
+            </Border>
 
             <TextBlock
                 Margin="0,24,0,4"
@@ -120,13 +138,28 @@
                 Style="{StaticResource BodyStrongTextBlockStyle}"
                 Text="Hakkında" />
             <Border Style="{StaticResource SettingsCardStyle}">
-                <StackPanel>
-                    <TextBlock Style="{StaticResource BodyTextBlockStyle}" Text="Antenim Yok" />
-                    <TextBlock
-                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                        Style="{StaticResource CaptionTextBlockStyle}"
-                        Text="{x:Bind ViewModel.Version}" />
-                </StackPanel>
+                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16">
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock Style="{StaticResource BodyTextBlockStyle}" Text="Antenim Yok" />
+                        <TextBlock
+                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                            Style="{StaticResource CaptionTextBlockStyle}"
+                            Text="{x:Bind ViewModel.Version}" />
+                        <TextBlock
+                            Margin="0,4,0,0"
+                            AutomationProperties.LiveSetting="Polite"
+                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                            Style="{StaticResource CaptionTextBlockStyle}"
+                            Text="{x:Bind ViewModel.UpdateStatusText, Mode=OneWay}"
+                            TextWrapping="Wrap" />
+                    </StackPanel>
+                    <Button
+                        Grid.Column="1"
+                        VerticalAlignment="Center"
+                        Command="{x:Bind ViewModel.CheckForUpdatesCommand}"
+                        Content="Güncellemeleri denetle"
+                        IsEnabled="{x:Bind ViewModel.CanCheckForUpdates}" />
+                </Grid>
             </Border>
         </StackPanel>
     </ScrollViewer>

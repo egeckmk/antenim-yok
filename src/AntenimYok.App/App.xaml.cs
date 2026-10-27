@@ -64,7 +64,14 @@ public partial class App : Application
             // Without it only media keys / the Quick Settings card are missing; the app itself still works.
             Services.GetRequiredService<ILogger<App>>().LogError(ex, "Could not create the media session");
         }
-        _window.Activate();
+        var startup = Services.GetRequiredService<StartupService>();
+        startup.RefreshPath();
+        if (StartupService.WasStartedInBackground())
+            _window.StartInTray(); // Signed in to Windows: just the tray icon, no window.
+        else
+            _window.Activate();
+
+        Services.GetRequiredService<UpdateService>().StartBackgroundChecks();
 
         // A second launch (see Program) lands here: bring the existing window back.
         var dispatcher = DispatcherQueue.GetForCurrentThread();
@@ -149,6 +156,18 @@ public partial class App : Application
         Exit();
     }
 
+    /// <summary>"Restart and update": tidy up like on exit (settings, tray icon), then let Velopack swap versions.</summary>
+    public void RestartForUpdate()
+    {
+        IsExiting = true;
+        Services.GetRequiredService<MainViewModel>().StopPlayback();
+        Services.GetRequiredService<MediaControlsService>().Detach();
+        _miniPlayer?.HideAndRemember();
+        Settings.Flush();
+        _window?.RemoveTrayIcon();
+        Services.GetRequiredService<UpdateService>().RestartAndApply();
+    }
+
     private static ServiceProvider ConfigureServices()
     {
         var services = new ServiceCollection();
@@ -182,6 +201,8 @@ public partial class App : Application
         });
         services.AddSingleton<MediaControlsService>();
         services.AddSingleton<ThemeService>();
+        services.AddSingleton<StartupService>();
+        services.AddSingleton<UpdateService>();
         services.AddSingleton<MainViewModel>();
         services.AddSingleton<DiscoverViewModel>();
         services.AddSingleton<SettingsViewModel>();

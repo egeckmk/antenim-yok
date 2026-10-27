@@ -39,6 +39,7 @@ public sealed partial class MainViewModel : ObservableObject
         SettingsStore settings,
         LogoCache logos,
         MediaControlsService mediaControls,
+        UpdateService updates,
         ILogger<MainViewModel> logger)
     {
         _favorites = favorites;
@@ -51,6 +52,11 @@ public sealed partial class MainViewModel : ObservableObject
         _player.StateChanged += (_, _) => _dispatcher.TryEnqueue(SyncFromPlayer);
         _songTitles.TitleChanged += (_, _) => _dispatcher.TryEnqueue(() => SongTitle = _songTitles.CurrentTitle);
         mediaControls.CommandReceived += (_, command) => _dispatcher.TryEnqueue(() => _ = HandleMediaCommandAsync(command));
+        updates.StatusChanged += (_, _) => _dispatcher.TryEnqueue(() =>
+        {
+            IsUpdateReady = updates.Status == UpdateStatus.ReadyToRestart;
+            UpdateReadyMessage = $"Antenim Yok {updates.NewVersion} indirildi. Şimdi yeniden başlatabilir ya da bir sonraki açılışta otomatik yüklenmesini bekleyebilirsin.";
+        });
 
         Volume = settings.Current.Volume * 100;
         IsMuted = settings.Current.IsMuted;
@@ -100,6 +106,16 @@ public sealed partial class MainViewModel : ObservableObject
 
     [ObservableProperty]
     public partial bool HasNoFavorites { get; private set; }
+
+    /// <summary>A new version was downloaded and waits for a restart.</summary>
+    [ObservableProperty]
+    public partial bool IsUpdateReady { get; private set; }
+
+    [ObservableProperty]
+    public partial string UpdateReadyMessage { get; private set; } = string.Empty;
+
+    [RelayCommand]
+    private void RestartToUpdate() => App.Current.RestartForUpdate();
 
     public bool HasStation => CurrentStation is not null;
     public bool IsConnecting => State is PlaybackState.Connecting or PlaybackState.Reconnecting;

@@ -28,8 +28,11 @@ tests/AntenimYok.Tests/  # xUnit — Core + ViewModel testleri
   İstasyonun `streams` listesi öncelik sırasıdır: açılmazsa (timeout ~10 sn) sıradakine geç.
 - Medya tuşları / Windows ses penceresi: `SystemMediaTransportControls`, ana pencereye bağlı
   (`ISystemMediaTransportControlsInterop.GetForWindow`; Hızlı Ayarlar'daki karta tıklayınca pencere açılsın diye).
-- Dağıtım: **paketsiz + self-contained** (`WindowsPackageType=None`, `WindowsAppSDKSelfContained=true`, `SelfContained=true`).
-  Admin gerektirmeyen, kurulumsuz klasör hedefleniyor.
+- Dağıtım: **paketsiz + self-contained** (`WindowsPackageType=None`, `WindowsAppSDKSelfContained=true`, `SelfContained=true`),
+  **Velopack** ile `Setup.exe` (packId `Ege.AntenimYok` → `%LOCALAPPDATA%\Ege.AntenimYok`, admin yok) ve GitHub Releases'ten
+  otomatik güncelleme (`UpdateService`). Exe: `AntenimYok.exe`. Başlat menüsü kısayolunu Velopack değil uygulama oluşturur
+  (AUMID `Ege.AntenimYok`); kaldırmada Velopack kancası siler. `VelopackApp.Run()` `Main`'in ilk satırı kalmalı.
+- Yayın çıktısı uygulamanın `.pri` dosyasını kendiliğinden kopyalamaz → csproj'daki `PublishAppResourceIndex` hedefi; silme.
 
 ## İstasyonlar ve veri
 - Repoda istasyon listesi **yok** (Ege kaldırdı; Gist de denendi, istenmedi). İstasyonlar Keşfet'ten (Radio Browser, TR) gelir.
@@ -39,7 +42,9 @@ tests/AntenimYok.Tests/  # xUnit — Core + ViewModel testleri
 ## Komutlar (Windows)
 - Derle: `dotnet build AntenimYok.slnx -c Debug -p:Platform=x64`
 - Test: `dotnet test tests/AntenimYok.Tests`
-- Yayın: `dotnet publish src/AntenimYok.App -c Release -r win-x64 -p:Platform=x64`
+- Yayın (Setup.exe): `.\scripts\publish.ps1` · bu PC'ye kur: `-Install` · GitHub Release: `-Upload` (`$env:GITHUB_TOKEN` gerekir;
+  token'ı Ege verir, repoya/komut geçmişine yazma). `src/AntenimYok.App` klasöründe VS'nin eski `.slnx`'i olabilir: `dotnet publish`'e
+  her zaman `.csproj` yolunu ver.
 
 ## Kurallar
 - Değişiklikten sonra derle + testleri çalıştır; derlenmeyen kod commit'lenmez.

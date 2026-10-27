@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.Windows.AppLifecycle;
+using Velopack;
 
 namespace AntenimYok.App;
 
@@ -18,6 +19,16 @@ public static partial class Program
     [STAThread]
     private static int Main(string[] args)
     {
+        // Velopack first: during install/update/uninstall it runs the hooks below and exits right here.
+        VelopackApp.Build()
+            .SetAppUserModelId(AppIdentity.AppUserModelId)
+            .OnBeforeUninstallFastCallback(_ =>
+            {
+                AppIdentity.RemoveStartMenuShortcut();
+                new StartupService().IsEnabled = false;
+            })
+            .Run();
+
         WinRT.ComWrappersSupport.InitializeComWrappers();
         AppIdentity.SetForProcess();
 

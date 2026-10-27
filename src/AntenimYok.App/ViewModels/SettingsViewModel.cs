@@ -12,15 +12,49 @@ public sealed partial class SettingsViewModel : ObservableObject
     private readonly ThemeService _themes;
 
     private readonly SongTitleMonitor _songTitles;
+    private readonly StartupService _startup;
+    private readonly UpdateService _updates;
 
-    public SettingsViewModel(SettingsStore settings, ThemeService themes, SongTitleMonitor songTitles)
+    public SettingsViewModel(
+        SettingsStore settings, ThemeService themes, SongTitleMonitor songTitles, StartupService startup, UpdateService updates)
     {
         _settings = settings;
         _themes = themes;
         _songTitles = songTitles;
+        _startup = startup;
+        _updates = updates;
+        var dispatcher = Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();
+        updates.StatusChanged += (_, _) => dispatcher.TryEnqueue(() => OnPropertyChanged(nameof(UpdateStatusText)));
         ThemeIndex = (int)settings.Current.Theme;
         CloseToTray = settings.Current.CloseToTray;
         ShowSongTitles = settings.Current.ShowSongTitles;
+        StartWithWindows = startup.IsEnabled;
+    }
+
+    public bool CanCheckForUpdates => _updates.IsInstalled;
+
+    public string UpdateStatusText => _updates.Status switch
+    {
+        UpdateStatus.NotInstalled => "Bu kopya kurulum (Setup.exe) ile kurulmadığı için güncellenmez.",
+        UpdateStatus.Checking => "Denetleniyor…",
+        UpdateStatus.UpToDate => "Güncel.",
+        UpdateStatus.Downloading => $"Antenim Yok {_updates.NewVersion} indiriliyor…",
+        UpdateStatus.ReadyToRestart => $"Antenim Yok {_updates.NewVersion} hazır; yeniden başlatınca yüklenir.",
+        UpdateStatus.Failed => "Güncelleme denetlenemedi (internet ya da GitHub'a ulaşılamıyor). Daha sonra yeniden denenir.",
+        _ => "Yeni sürümler açılışta ve birkaç saatte bir denetlenir.",
+    };
+
+    [CommunityToolkit.Mvvm.Input.RelayCommand]
+    private System.Threading.Tasks.Task CheckForUpdatesAsync() => _updates.CheckAsync();
+
+    /// <summary>Kept in the registry (Run key), not in settings.json.</summary>
+    [ObservableProperty]
+    public partial bool StartWithWindows { get; set; }
+
+    partial void OnStartWithWindowsChanged(bool value)
+    {
+        if (_startup.IsEnabled != value)
+            _startup.IsEnabled = value;
     }
 
     [ObservableProperty]
