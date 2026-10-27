@@ -1,0 +1,15 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+  </Configurations>
+  <Folder Name="/src/">
+    <Project Path="src/AntenimYok.App/AntenimYok.App.csproj">
+      <Platform Project="x64" />
+      <Deploy />
+    </Project>
+    <Project Path="src/AntenimYok.Core/AntenimYok.Core.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/AntenimYok.Tests/AntenimYok.Tests.csproj" />
+  </Folder>
+</Solution>
