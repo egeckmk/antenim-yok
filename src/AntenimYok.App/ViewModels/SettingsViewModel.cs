@@ -1,5 +1,6 @@
 using System.Reflection;
 using AntenimYok.App.Services;
+using AntenimYok.Core.Playback;
 using AntenimYok.Core.Settings;
 using CommunityToolkit.Mvvm.ComponentModel;
 
@@ -10,12 +11,25 @@ public sealed partial class SettingsViewModel : ObservableObject
     private readonly SettingsStore _settings;
     private readonly ThemeService _themes;
 
-    public SettingsViewModel(SettingsStore settings, ThemeService themes)
+    private readonly SongTitleMonitor _songTitles;
+
+    public SettingsViewModel(SettingsStore settings, ThemeService themes, SongTitleMonitor songTitles)
     {
         _settings = settings;
         _themes = themes;
+        _songTitles = songTitles;
         ThemeIndex = (int)settings.Current.Theme;
         CloseToTray = settings.Current.CloseToTray;
+        ShowSongTitles = settings.Current.ShowSongTitles;
+    }
+
+    [ObservableProperty]
+    public partial bool ShowSongTitles { get; set; }
+
+    partial void OnShowSongTitlesChanged(bool value)
+    {
+        _settings.Update(s => s with { ShowSongTitles = value });
+        _songTitles.IsEnabled = value;
     }
 
     /// <summary>Index into Sistem / Açık / Koyu (same order as <see cref="AppTheme"/>).</summary>

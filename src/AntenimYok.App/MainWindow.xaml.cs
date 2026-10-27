@@ -109,7 +109,7 @@ public sealed partial class MainWindow : Window
 
     // ---------- Navigation ----------
 
-    private void NavigateTo(string tag)
+    public void NavigateTo(string tag)
     {
         NavView.SelectedItem = NavView.MenuItems.Concat(NavView.FooterMenuItems)
             .OfType<NavigationViewItem>()
@@ -134,10 +134,10 @@ public sealed partial class MainWindow : Window
 
     private void OnPaneToggleRequested(TitleBar sender, object args) => NavView.IsPaneOpen = !NavView.IsPaneOpen;
 
-    // Typing a search while on another page jumps to Favorites, where the results are.
+    // The search filters Favorites or Discover (whichever is open); typing on Settings jumps to Favorites.
     private void OnSearchTextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
     {
-        if (args.Reason == AutoSuggestionBoxTextChangeReason.UserInput && ContentFrame.CurrentSourcePageType != typeof(FavoritesPage))
+        if (args.Reason == AutoSuggestionBoxTextChangeReason.UserInput && ContentFrame.CurrentSourcePageType == typeof(SettingsPage))
             NavigateTo("favorites");
     }
 

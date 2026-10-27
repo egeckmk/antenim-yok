@@ -3,6 +3,7 @@ using System.Net.Http;
 using System.Net.NetworkInformation;
 using AntenimYok.App.Services;
 using AntenimYok.App.ViewModels;
+using AntenimYok.Core.Discovery;
 using AntenimYok.Core.Playback;
 using AntenimYok.Core.Settings;
 using AntenimYok.Core.Stations;
@@ -44,6 +45,13 @@ public partial class App : Application
         }
     }
 
+    /// <summary>
+    /// Shared station list: public Gist, "raw" URL without a revision id so it always serves the latest copy.
+    /// Keep it in sync with data/stations.json.
+    /// </summary>
+    private static readonly Uri? RemoteStationsUrl =
+        new("https://gist.githubusercontent.com/egeckmk/f2f46c64d11840bb3156c58aa8bfa958/raw/gistfile1.txt");
+
     public static new App Current => (App)Application.Current;
 
     public IServiceProvider Services { get; }
@@ -77,6 +85,8 @@ public partial class App : Application
                 radio.NotifyNetworkAvailable();
         };
     }
+
+    public void NavigateTo(string tag) => _window?.NavigateTo(tag);
 
     public void ShowMainWindow()
     {
@@ -158,14 +168,33 @@ public partial class App : Application
         });
         services.AddSingleton(sp => new SettingsStore(SettingsStore.DefaultPath, sp.GetRequiredService<ILogger<SettingsStore>>()));
         services.AddSingleton<StationRepository>();
+        services.AddSingleton(sp => new StationCatalog(
+            sp.GetRequiredService<StationRepository>(), sp.GetRequiredService<HttpClient>(), RemoteStationsUrl,
+            StationCatalog.DefaultCachePath, sp.GetRequiredService<ILogger<StationCatalog>>()));
+        services.AddSingleton(sp => new FavoritesStore(FavoritesStore.DefaultPath, sp.GetRequiredService<ILogger<FavoritesStore>>()));
+        services.AddSingleton<RadioBrowserClient>();
         services.AddSingleton<LogoCache>();
         services.AddSingleton<IStreamResolver, StreamResolver>();
         services.AddSingleton<MediaPlayerStreamPlayer>();
         services.AddSingleton<IStreamPlayer>(sp => sp.GetRequiredService<MediaPlayerStreamPlayer>());
         services.AddSingleton<RadioPlayer>();
+        // Its own client: the metadata connection stays open as long as the station plays.
+        services.AddSingleton<IIcyMetadataReader>(_ =>
+        {
+            var http = new HttpClient { Timeout = System.Threading.Timeout.InfiniteTimeSpan };
+            http.DefaultRequestHeaders.UserAgent.ParseAdd("AntenimYok/1.0");
+            return new IcyMetadataReader(http);
+        });
+        services.AddSingleton(sp => new SongTitleMonitor(
+            sp.GetRequiredService<RadioPlayer>(), sp.GetRequiredService<IIcyMetadataReader>(),
+            sp.GetRequiredService<ILogger<SongTitleMonitor>>())
+        {
+            IsEnabled = sp.GetRequiredService<SettingsStore>().Current.ShowSongTitles,
+        });
         services.AddSingleton<MediaControlsService>();
         services.AddSingleton<ThemeService>();
         services.AddSingleton<MainViewModel>();
+        services.AddSingleton<DiscoverViewModel>();
         services.AddSingleton<SettingsViewModel>();
         return services.BuildServiceProvider();
     }

@@ -128,7 +128,8 @@
                     AutomationProperties.LiveSetting="Polite"
                     Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                     Style="{StaticResource CaptionTextBlockStyle}"
-                    Text="{x:Bind ViewModel.StatusText, Mode=OneWay}"
+                    Text="{x:Bind ViewModel.NowPlayingDetail, Mode=OneWay}"
+                    ToolTipService.ToolTip="{x:Bind ViewModel.NowPlayingDetail, Mode=OneWay}"
                     TextTrimming="CharacterEllipsis"
                     TextWrapping="NoWrap" />
             </StackPanel>

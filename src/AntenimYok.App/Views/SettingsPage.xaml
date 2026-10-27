@@ -70,6 +70,30 @@
                 Margin="0,24,0,4"
                 AutomationProperties.HeadingLevel="Level2"
                 Style="{StaticResource BodyStrongTextBlockStyle}"
+                Text="Çalma" />
+            <Border Style="{StaticResource SettingsCardStyle}">
+                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16">
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock Style="{StaticResource BodyTextBlockStyle}" Text="Çalan şarkının adını göster" />
+                        <TextBlock
+                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                            Style="{StaticResource CaptionTextBlockStyle}"
+                            Text="Destekleyen istasyonlarda. Şarkı adını okumak için yayına ikinci bir bağlantı açılır; veri kullanımı yaklaşık iki katına çıkar."
+                            TextWrapping="Wrap" />
+                    </StackPanel>
+                    <ToggleSwitch
+                        Grid.Column="1"
+                        AutomationProperties.Name="Çalan şarkının adını göster"
+                        IsOn="{x:Bind ViewModel.ShowSongTitles, Mode=TwoWay}"
+                        OffContent="Kapalı"
+                        OnContent="Açık" />
+                </Grid>
+            </Border>
+
+            <TextBlock
+                Margin="0,24,0,4"
+                AutomationProperties.HeadingLevel="Level2"
+                Style="{StaticResource BodyStrongTextBlockStyle}"
                 Text="Klavye kısayolları" />
             <Border Style="{StaticResource SettingsCardStyle}">
                 <Grid

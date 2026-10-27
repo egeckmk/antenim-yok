@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
@@ -20,28 +21,38 @@ public sealed partial class MainViewModel : ObservableObject
 {
     private const double VolumeStep = 5;
 
-    private readonly StationRepository _repository;
+    private readonly StationCatalog _catalog;
+    private readonly FavoritesStore _favorites;
     private readonly RadioPlayer _player;
+    private readonly SongTitleMonitor _songTitles;
     private readonly SettingsStore _settings;
     private readonly LogoCache _logos;
     private readonly ILogger<MainViewModel> _logger;
     private readonly DispatcherQueue _dispatcher;
 
+    /// <summary>One <see cref="StationItem"/> per station id, shared by every page.</summary>
+    private readonly Dictionary<string, StationItem> _items = [];
+
     public MainViewModel(
-        StationRepository repository,
+        StationCatalog catalog,
+        FavoritesStore favorites,
         RadioPlayer player,
+        SongTitleMonitor songTitles,
         SettingsStore settings,
         LogoCache logos,
         MediaControlsService mediaControls,
         ILogger<MainViewModel> logger)
     {
-        _repository = repository;
+        _catalog = catalog;
+        _favorites = favorites;
         _player = player;
+        _songTitles = songTitles;
         _settings = settings;
         _logos = logos;
         _logger = logger;
         _dispatcher = DispatcherQueue.GetForCurrentThread();
         _player.StateChanged += (_, _) => _dispatcher.TryEnqueue(SyncFromPlayer);
+        _songTitles.TitleChanged += (_, _) => _dispatcher.TryEnqueue(() => SongTitle = _songTitles.CurrentTitle);
         mediaControls.CommandReceived += (_, command) => _dispatcher.TryEnqueue(() => _ = HandleMediaCommandAsync(command));
 
         Volume = settings.Current.Volume * 100;
@@ -50,24 +61,30 @@ public sealed partial class MainViewModel : ObservableObject
         _player.IsMuted = settings.Current.IsMuted;
     }
 
-    /// <summary>Favorites, in order (Ctrl+1…9, next/previous).</summary>
+    /// <summary>Favorites, in order (Ctrl+1…9, next/previous, tray menu).</summary>
     public ObservableCollection<StationItem> Stations { get; } = [];
 
     /// <summary><see cref="Stations"/> filtered by <see cref="SearchText"/>.</summary>
     public ObservableCollection<StationItem> VisibleStations { get; } = [];
 
     [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(HasStation), nameof(StationName), nameof(CurrentItem), nameof(StatusText), nameof(TrayToolTip))]
+    [NotifyPropertyChangedFor(nameof(HasStation), nameof(StationName), nameof(CurrentItem), nameof(StatusText),
+        nameof(NowPlayingDetail), nameof(TrayToolTip))]
     [NotifyCanExecuteChangedFor(nameof(TogglePlaybackCommand))]
     public partial Station? CurrentStation { get; private set; }
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsConnecting), nameof(IsActive), nameof(HasError), nameof(StatusText),
-        nameof(PlayStopGlyph), nameof(PlayStopLabel), nameof(TrayToolTip))]
+        nameof(NowPlayingDetail), nameof(PlayStopGlyph), nameof(PlayStopLabel), nameof(TrayToolTip))]
     public partial PlaybackState State { get; private set; }
 
     [ObservableProperty]
     public partial StationStream? CurrentStream { get; private set; }
+
+    /// <summary>"Artist - Song" from the stream, when it sends one.</summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(NowPlayingDetail), nameof(TrayToolTip))]
+    public partial string? SongTitle { get; private set; }
 
     /// <summary>0 – 100</summary>
     [ObservableProperty]
@@ -87,13 +104,16 @@ public sealed partial class MainViewModel : ObservableObject
     [ObservableProperty]
     public partial bool HasNoResults { get; private set; }
 
+    [ObservableProperty]
+    public partial bool HasNoFavorites { get; private set; }
+
     public bool HasStation => CurrentStation is not null;
     public bool IsConnecting => State is PlaybackState.Connecting or PlaybackState.Reconnecting;
     public bool IsActive => State is PlaybackState.Connecting or PlaybackState.Playing or PlaybackState.Reconnecting;
     public bool HasError => State == PlaybackState.Error;
 
     public string StationName => CurrentStation?.Name ?? "Bir istasyon seçin";
-    public StationItem? CurrentItem => Stations.FirstOrDefault(i => i.Station == CurrentStation);
+    public StationItem? CurrentItem => CurrentStation is null ? null : _items.GetValueOrDefault(CurrentStation.Id);
 
     public string StatusText => State switch
     {
@@ -105,11 +125,23 @@ public sealed partial class MainViewModel : ObservableObject
         _ => "Durduruldu",
     };
 
+    /// <summary>Second line under the station name: the song if known, otherwise the status.</summary>
+    public string NowPlayingDetail => State == PlaybackState.Playing && !string.IsNullOrEmpty(SongTitle)
+        ? SongTitle
+        : StatusText;
+
     public string NoResultsText => $"“{SearchText.Trim()}” ile eşleşen istasyon yok.";
 
-    public string TrayToolTip => CurrentStation is { } station && IsActive
-        ? $"Antenim Yok — {station.Name}"
-        : "Antenim Yok";
+    public string TrayToolTip
+    {
+        get
+        {
+            if (CurrentStation is not { } station || !IsActive)
+                return "Antenim Yok";
+            var text = string.IsNullOrEmpty(SongTitle) ? station.Name : $"{station.Name} — {SongTitle}";
+            return text.Length <= 120 ? text : text[..119] + "…"; // Windows caps tray tooltips at 127 chars.
+        }
+    }
 
     public string PlayStopGlyph => Glyph(IsActive ? 0xE71A : 0xE768); // Stop / Play
     public string PlayStopLabel => IsActive ? "Durdur" : "Çal";
@@ -122,19 +154,29 @@ public sealed partial class MainViewModel : ObservableObject
         try
         {
             LoadFailed = false;
-            var stations = await _repository.LoadEmbeddedAsync();
+            var catalog = await _catalog.LoadAsync();
+            var favorites = _favorites.Merge(catalog);
+
+            // Catalog stations are known even when not favorites: Discover maps Radio Browser hits onto them.
+            foreach (var station in catalog)
+                GetItem(station);
+
             Stations.Clear();
-            foreach (var station in stations)
+            foreach (var station in favorites)
             {
-                var item = new StationItem(station);
+                var item = GetItem(station);
+                item.IsFavorite = true;
                 Stations.Add(item);
-                _ = LoadLogoAsync(item);
+                EnsureLogo(item);
             }
-            ApplyFilter();
+            OnFavoritesChanged();
 
             // Show the last station in the bar (not auto-playing).
-            CurrentStation ??= stations.FirstOrDefault(s => s.Id == _settings.Current.LastStationId);
+            CurrentStation ??= Stations.FirstOrDefault(i => i.Station.Id == _settings.Current.LastStationId)?.Station;
             OnPropertyChanged(nameof(CurrentItem));
+
+            // The shared online list is applied on the next start (never swaps stations under the player).
+            _ = _catalog.RefreshAsync();
         }
         catch (Exception ex)
         {
@@ -143,13 +185,45 @@ public sealed partial class MainViewModel : ObservableObject
         }
     }
 
+    /// <summary>The shared item for a station (created on first use).</summary>
+    public StationItem GetItem(Station station)
+    {
+        if (!_items.TryGetValue(station.Id, out var item))
+        {
+            item = new StationItem(station) { IsFavorite = _favorites.IsFavorite(station.Id) };
+            _items[station.Id] = item;
+        }
+        return item;
+    }
+
+    /// <summary>
+    /// A catalog/favorite station that is the same as this Radio Browser hit: same Radio Browser id,
+    /// or the same name (Radio Browser often lists one station several times under different ids).
+    /// </summary>
+    public StationItem? FindKnown(Station discovered)
+    {
+        var name = StationSearch.Fold(discovered.Name);
+        var known = _items.Values.Where(i => !i.Station.Id.StartsWith("rb-", StringComparison.Ordinal)).ToList();
+        return known.FirstOrDefault(i => discovered.RadioBrowserUuid is { } uuid && i.Station.RadioBrowserUuid == uuid)
+            ?? known.FirstOrDefault(i => StationSearch.Fold(i.Station.Name) == name);
+    }
+
+    /// <summary>Starts the logo download the first time an item is shown.</summary>
+    public void EnsureLogo(StationItem item)
+    {
+        if (item.LogoRequested)
+            return;
+        item.LogoRequested = true;
+        _ = LoadLogoAsync(item);
+    }
+
     private async Task LoadLogoAsync(StationItem item)
     {
         try
         {
             if (await _logos.GetPathAsync(item.Station) is not { } path)
                 return;
-            var bitmap = new BitmapImage();
+            var bitmap = new BitmapImage { DecodePixelWidth = 192 };
             using (var stream = await FileRandomAccessStream.OpenAsync(path, FileAccessMode.Read))
                 await bitmap.SetSourceAsync(stream);
             item.Logo = bitmap;
@@ -158,6 +232,25 @@ public sealed partial class MainViewModel : ObservableObject
         {
             _logger.LogWarning(ex, "Could not show logo for {Station}", item.Name);
         }
+    }
+
+    [RelayCommand]
+    private void ToggleFavorite(StationItem item)
+    {
+        if (item.IsFavorite)
+        {
+            _favorites.Remove(item.Station.Id);
+            item.IsFavorite = false;
+            Stations.Remove(item);
+        }
+        else
+        {
+            _favorites.Add(item.Station);
+            item.IsFavorite = true;
+            Stations.Add(item);
+            EnsureLogo(item);
+        }
+        OnFavoritesChanged();
     }
 
     /// <summary>Clicking the station that is already playing stops it.</summary>
@@ -169,6 +262,7 @@ public sealed partial class MainViewModel : ObservableObject
             _player.Stop();
             return;
         }
+        EnsureLogo(GetItem(station));
         await _player.PlayAsync(station);
     }
 
@@ -227,6 +321,7 @@ public sealed partial class MainViewModel : ObservableObject
         }
     }
 
+    /// <summary>Next/previous favorite; from a non-favorite station it starts at the first one.</summary>
     private async Task PlayRelativeAsync(int offset)
     {
         if (Stations.Count == 0)
@@ -239,6 +334,12 @@ public sealed partial class MainViewModel : ObservableObject
     }
 
     partial void OnSearchTextChanged(string value) => ApplyFilter();
+
+    private void OnFavoritesChanged()
+    {
+        HasNoFavorites = Stations.Count == 0;
+        ApplyFilter();
+    }
 
     private void ApplyFilter()
     {
@@ -270,13 +371,14 @@ public sealed partial class MainViewModel : ObservableObject
     {
         // Item flags first: State/CurrentStation listeners (tray menu) read them.
         var station = _player.CurrentStation ?? CurrentStation;
-        foreach (var item in Stations)
+        foreach (var item in _items.Values)
             item.IsPlaying = _player.IsActive && item.Station == station;
 
         CurrentStation = station;
         CurrentStream = _player.CurrentStream;
         State = _player.State;
         OnPropertyChanged(nameof(StatusText));
+        OnPropertyChanged(nameof(NowPlayingDetail));
 
         if (State == PlaybackState.Playing && station is not null)
             _settings.Update(s => s with { LastStationId = station.Id });

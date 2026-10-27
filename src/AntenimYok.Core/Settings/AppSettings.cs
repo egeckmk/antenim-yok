@@ -18,6 +18,9 @@ public sealed record AppSettings
     public string? LastPage { get; init; }
 
     public WindowPosition? MiniPlayerPosition { get; init; }
+
+    /// <summary>Read "now playing" titles of Icecast streams (opens a second connection to the stream).</summary>
+    public bool ShowSongTitles { get; init; } = true;
 }
 
 public enum AppTheme

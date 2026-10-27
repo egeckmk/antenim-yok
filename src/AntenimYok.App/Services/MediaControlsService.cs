@@ -25,7 +25,11 @@ public enum MediaCommand
 /// shows the station and forwards button presses as <see cref="MediaCommand"/>s.
 /// The session is tied to the main window, so clicking the media card in Quick Settings brings that window up.
 /// </summary>
-public sealed class MediaControlsService(RadioPlayer radio, LogoCache logos, ILogger<MediaControlsService> logger)
+public sealed class MediaControlsService(
+    RadioPlayer radio,
+    SongTitleMonitor songTitles,
+    LogoCache logos,
+    ILogger<MediaControlsService> logger)
 {
     private static readonly Guid SystemMediaTransportControlsIid = new("99FA3FF4-1742-42A6-902E-087D41F965EC");
 
@@ -59,6 +63,7 @@ public sealed class MediaControlsService(RadioPlayer radio, LogoCache logos, ILo
         _controls.IsPreviousEnabled = true;
         _controls.ButtonPressed += OnButtonPressed;
         radio.StateChanged += OnRadioStateChanged;
+        songTitles.TitleChanged += OnSongTitleChanged;
         Update();
     }
 
@@ -68,6 +73,7 @@ public sealed class MediaControlsService(RadioPlayer radio, LogoCache logos, ILo
         if (_controls is null)
             return;
         radio.StateChanged -= OnRadioStateChanged;
+        songTitles.TitleChanged -= OnSongTitleChanged;
         _controls.ButtonPressed -= OnButtonPressed;
         _controls.IsEnabled = false;
         _controls = null;
@@ -75,6 +81,22 @@ public sealed class MediaControlsService(RadioPlayer radio, LogoCache logos, ILo
 
     // RadioPlayer may raise this on a background thread; the window-bound session is used from the UI thread only.
     private void OnRadioStateChanged(object? sender, EventArgs e) => _dispatcher?.TryEnqueue(Update);
+
+    private void OnSongTitleChanged(object? sender, EventArgs e) => _dispatcher?.TryEnqueue(() =>
+    {
+        if (_controls is null || _shownStation is null)
+            return;
+        ApplyText(_controls.DisplayUpdater, _shownStation);
+        _controls.DisplayUpdater.Update();
+    });
+
+    /// <summary>With a song: song / station. Without: station / app name.</summary>
+    private void ApplyText(SystemMediaTransportControlsDisplayUpdater updater, Station station)
+    {
+        var song = songTitles.CurrentTitle;
+        updater.MusicProperties.Title = song ?? station.Name;
+        updater.MusicProperties.Artist = song is null ? "Antenim Yok" : station.Name;
+    }
 
     private void OnButtonPressed(SystemMediaTransportControls sender, SystemMediaTransportControlsButtonPressedEventArgs args)
     {
@@ -119,9 +141,7 @@ public sealed class MediaControlsService(RadioPlayer radio, LogoCache logos, ILo
             var updater = controls.DisplayUpdater;
             updater.ClearAll();
             updater.Type = MediaPlaybackType.Music;
-            updater.MusicProperties.Title = station.Name;
-            updater.MusicProperties.Artist = "Antenim Yok";
-
+            ApplyText(updater, station);
             updater.Update();
 
             // Cached PNG: works for ICO/WebP logos and when the logo host is blocked later.

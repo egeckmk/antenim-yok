@@ -22,8 +22,8 @@ public static class StationSearch
             .All(word => name.Contains(word, StringComparison.Ordinal));
     }
 
-    // Lower case (Turkish rules), drop accents (ü→u, ş→s, ç→c, ğ→g, ö→o) and dotless ı→i.
-    private static string Fold(string text)
+    /// <summary>Lower case (Turkish rules), drop accents (ü→u, ş→s, ç→c, ğ→g, ö→o) and dotless ı→i.</summary>
+    public static string Fold(string text)
     {
         var decomposed = text.ToLower(Turkish).Normalize(NormalizationForm.FormD);
         var sb = new StringBuilder(decomposed.Length);

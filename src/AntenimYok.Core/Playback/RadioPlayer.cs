@@ -53,6 +53,9 @@ public sealed class RadioPlayer
 
     public Station? CurrentStation { get; private set; }
     public StationStream? CurrentStream { get; private set; }
+
+    /// <summary>The URL actually playing (after playlist resolution); null unless <see cref="PlaybackState.Playing"/>.</summary>
+    public Uri? CurrentUrl { get; private set; }
     public PlaybackState State { get; private set; }
 
     /// <summary>Connecting, playing or reconnecting — i.e. "stop" is the meaningful action.</summary>
@@ -111,7 +114,7 @@ public sealed class RadioPlayer
                     return false;
 
                 _logger.LogInformation("Playing {Station} from {Url}", station.Name, uri);
-                SetState(station, stream, PlaybackState.Playing);
+                SetState(station, stream, PlaybackState.Playing, uri);
                 return true;
             }
             catch (OperationCanceledException) when (token.IsCancellationRequested)
@@ -183,10 +186,11 @@ public sealed class RadioPlayer
         _ = ReconnectAsync(station, token);
     }
 
-    private void SetState(Station? station, StationStream? stream, PlaybackState state)
+    private void SetState(Station? station, StationStream? stream, PlaybackState state, Uri? url = null)
     {
         CurrentStation = station;
         CurrentStream = stream;
+        CurrentUrl = url;
         State = state;
         StateChanged?.Invoke(this, EventArgs.Empty);
     }

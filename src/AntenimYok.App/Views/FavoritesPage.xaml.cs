@@ -22,4 +22,12 @@ public sealed partial class FavoritesPage : Page
     }
 
     private void OnClearSearch(object sender, RoutedEventArgs e) => ViewModel.SearchText = string.Empty;
+
+    private void OnRemoveFavorite(object sender, RoutedEventArgs e)
+    {
+        if (sender is FrameworkElement { Tag: StationItem item })
+            ViewModel.ToggleFavoriteCommand.Execute(item);
+    }
+
+    private void OnGoToDiscover(object sender, RoutedEventArgs e) => App.Current.NavigateTo("discover");
 }

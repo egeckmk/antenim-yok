@@ -31,6 +31,18 @@
                         AutomationProperties.Name="{x:Bind Name}"
                         Spacing="8"
                         ToolTipService.ToolTip="{x:Bind Name}">
+                        <StackPanel.ContextFlyout>
+                            <MenuFlyout>
+                                <MenuFlyoutItem
+                                    Click="OnRemoveFavorite"
+                                    Tag="{x:Bind}"
+                                    Text="Favorilerden çıkar">
+                                    <MenuFlyoutItem.Icon>
+                                        <FontIcon Glyph="&#xE8D9;" />
+                                    </MenuFlyoutItem.Icon>
+                                </MenuFlyoutItem>
+                            </MenuFlyout>
+                        </StackPanel.ContextFlyout>
                         <Grid Width="96" Height="96">
                             <controls:StationLogo
                                 CornerRadius="{StaticResource OverlayCornerRadius}"
@@ -67,6 +79,37 @@
                 </DataTemplate>
             </GridView.ItemTemplate>
         </GridView>
+
+        <!--  No favorites at all  -->
+        <StackPanel
+            Grid.Row="1"
+            MaxWidth="420"
+            Margin="36"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Spacing="12"
+            Visibility="{x:Bind ViewModel.HasNoFavorites, Mode=OneWay}">
+            <FontIcon
+                HorizontalAlignment="Center"
+                FontSize="48"
+                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                Glyph="&#xE734;" />
+            <TextBlock
+                HorizontalAlignment="Center"
+                Style="{StaticResource SubtitleTextBlockStyle}"
+                Text="Henüz favori yok" />
+            <TextBlock
+                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                Style="{StaticResource BodyTextBlockStyle}"
+                Text="Keşfet'te bir istasyonun yanındaki yıldıza tıklayarak buraya ekleyebilirsin."
+                TextAlignment="Center"
+                TextWrapping="Wrap" />
+            <Button
+                HorizontalAlignment="Center"
+                Click="OnGoToDiscover"
+                Content="Keşfet'e git"
+                Style="{StaticResource AccentButtonStyle}" />
+        </StackPanel>
 
         <!--  Empty search result  -->
         <StackPanel
