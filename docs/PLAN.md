@@ -10,9 +10,8 @@ Her sprint ≈ 1 akşam / 2–3 saat. Her sprint sonunda çalışan bir exe + k�
 - [x] Akış URL'leri bulundu → [stations.json](stations.json) v1 (9 istasyon, yedek akışlı; `unverified` olanlar Sprint 1'de denenecek; Power Türk, Fenomen, Kafa logosu yok)
 - [x] Uygulamanın adı: **Antenim Yok** ✅ (repo: `antenim-yok`)
 - [ ] Ana pencere + mini pencere + tepsi menüsü wireframe'i (onay)
-- [ ] GitHub'da kişisel repo `egeckmk/antenim-yok`, solution iskeleti
-- [ ] `native-app-ui` skill'ini repoya `.claude/skills/` altına kopyala
-- [ ] `native-app-ui` skill'ini repoya `.claude/skills/` altına kopyala
+- [x] GitHub'da kişisel repo `egeckmk/antenim-yok`, solution iskeleti (App net10 paketsiz/self-contained x64 + Core + Tests)
+- [x] `native-app-ui` skill'ini repoya `.claude/skills/` altına kopyala
 
 ### Sprint 1 — Çalan MVP
 - [ ] `stations.json` uygulamaya gömülü; istasyon listesi
