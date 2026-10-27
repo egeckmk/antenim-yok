@@ -5,9 +5,9 @@ using Microsoft.Extensions.Logging;
 namespace AntenimYok.Core.Stations;
 
 /// <summary>
-/// The user's favorites (order matters: Ctrl+1…9, next/previous), kept in favorites.json.
-/// Each favorite is stored as a full snapshot so stations found on Radio Browser survive restarts;
-/// catalog stations (stations.json) are refreshed from the catalog on every <see cref="Merge"/>.
+/// The user's favorites (order matters: Ctrl+1…9, next/previous), kept locally in favorites.json.
+/// Starts empty. Each favorite is stored as a full snapshot so stations found on Radio Browser survive restarts;
+/// favorites that are also in the built-in catalog (stations.json) get the catalog's verified data on <see cref="Load"/>.
 /// </summary>
 public sealed class FavoritesStore(string path, ILogger<FavoritesStore> logger)
 {
@@ -22,7 +22,6 @@ public sealed class FavoritesStore(string path, ILogger<FavoritesStore> logger)
 
     private readonly Lock _gate = new();
     private List<Station> _favorites = [];
-    private HashSet<string> _knownCatalogIds = [];
 
     /// <summary>%LOCALAPPDATA%\AntenimYok\favorites.json</summary>
     public static string DefaultPath => Path.Combine(
@@ -38,17 +37,14 @@ public sealed class FavoritesStore(string path, ILogger<FavoritesStore> logger)
     }
 
     /// <summary>
-    /// Loads favorites and reconciles them with the catalog: first run = the whole catalog;
-    /// stations newly added to the catalog are appended once (removing one later sticks);
-    /// catalog favorites get the catalog's current data (fresh stream URLs).
+    /// Loads favorites (empty on first run). Favorites that are catalog stations — same id, or a
+    /// Radio Browser station with the catalog entry's Radio Browser id — get the catalog's current data.
     /// </summary>
-    public IReadOnlyList<Station> Merge(IReadOnlyList<Station> catalog)
+    public IReadOnlyList<Station> Load(IReadOnlyList<Station> catalog)
     {
         lock (_gate)
         {
-            var file = Load();
-            _favorites = file?.Stations.ToList() ?? [];
-            _knownCatalogIds = file?.KnownCatalogIds.ToHashSet() ?? [];
+            _favorites = ReadFile()?.Stations.ToList() ?? [];
 
             var byId = catalog.ToDictionary(s => s.Id);
             var byUuid = catalog
@@ -64,13 +60,6 @@ public sealed class FavoritesStore(string path, ILogger<FavoritesStore> logger)
                 .DistinctBy(f => f.Id)
                 .ToList();
 
-            foreach (var station in catalog)
-            {
-                if (_knownCatalogIds.Add(station.Id) && _favorites.All(f => f.Id != station.Id))
-                    _favorites.Add(station);
-            }
-
-            Save();
             return _favorites.ToList();
         }
     }
@@ -101,7 +90,7 @@ public sealed class FavoritesStore(string path, ILogger<FavoritesStore> logger)
         }
     }
 
-    private FavoritesFile? Load()
+    private FavoritesFile? ReadFile()
     {
         try
         {
@@ -110,7 +99,7 @@ public sealed class FavoritesStore(string path, ILogger<FavoritesStore> logger)
         }
         catch (Exception ex)
         {
-            logger.LogWarning(ex, "Could not read favorites from {Path}; starting from the catalog", path);
+            logger.LogWarning(ex, "Could not read favorites from {Path}; starting empty", path);
         }
         return null;
     }
@@ -121,7 +110,7 @@ public sealed class FavoritesStore(string path, ILogger<FavoritesStore> logger)
         {
             Directory.CreateDirectory(Path.GetDirectoryName(path)!);
             var temp = path + ".tmp";
-            var file = new FavoritesFile { Stations = _favorites, KnownCatalogIds = _knownCatalogIds.Order().ToList() };
+            var file = new FavoritesFile { Stations = _favorites };
             File.WriteAllText(temp, JsonSerializer.Serialize(file, JsonOptions));
             File.Move(temp, path, overwrite: true);
         }
@@ -134,8 +123,5 @@ public sealed class FavoritesStore(string path, ILogger<FavoritesStore> logger)
     private sealed record FavoritesFile
     {
         public IReadOnlyList<Station> Stations { get; init; } = [];
-
-        /// <summary>Catalog stations already offered once (so a removed one is not re-added).</summary>
-        public IReadOnlyList<string> KnownCatalogIds { get; init; } = [];
     }
 }

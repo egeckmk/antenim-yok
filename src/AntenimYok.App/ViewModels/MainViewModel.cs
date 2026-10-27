@@ -21,7 +21,7 @@ public sealed partial class MainViewModel : ObservableObject
 {
     private const double VolumeStep = 5;
 
-    private readonly StationCatalog _catalog;
+    private readonly StationRepository _catalog;
     private readonly FavoritesStore _favorites;
     private readonly RadioPlayer _player;
     private readonly SongTitleMonitor _songTitles;
@@ -34,7 +34,7 @@ public sealed partial class MainViewModel : ObservableObject
     private readonly Dictionary<string, StationItem> _items = [];
 
     public MainViewModel(
-        StationCatalog catalog,
+        StationRepository catalog,
         FavoritesStore favorites,
         RadioPlayer player,
         SongTitleMonitor songTitles,
@@ -154,10 +154,11 @@ public sealed partial class MainViewModel : ObservableObject
         try
         {
             LoadFailed = false;
-            var catalog = await _catalog.LoadAsync();
-            var favorites = _favorites.Merge(catalog);
+            // Built-in, verified stations (data/stations.json). Not favorites by themselves: when the same station
+            // is picked in Discover, its checked stream URLs, fallbacks and logo are used instead of Radio Browser's.
+            var catalog = await _catalog.LoadEmbeddedAsync();
+            var favorites = _favorites.Load(catalog);
 
-            // Catalog stations are known even when not favorites: Discover maps Radio Browser hits onto them.
             foreach (var station in catalog)
                 GetItem(station);
 
@@ -174,9 +175,6 @@ public sealed partial class MainViewModel : ObservableObject
             // Show the last station in the bar (not auto-playing).
             CurrentStation ??= Stations.FirstOrDefault(i => i.Station.Id == _settings.Current.LastStationId)?.Station;
             OnPropertyChanged(nameof(CurrentItem));
-
-            // The shared online list is applied on the next start (never swaps stations under the player).
-            _ = _catalog.RefreshAsync();
         }
         catch (Exception ex)
         {

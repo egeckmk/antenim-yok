@@ -45,13 +45,6 @@ public partial class App : Application
         }
     }
 
-    /// <summary>
-    /// Shared station list: public Gist, "raw" URL without a revision id so it always serves the latest copy.
-    /// Keep it in sync with data/stations.json.
-    /// </summary>
-    private static readonly Uri? RemoteStationsUrl =
-        new("https://gist.githubusercontent.com/egeckmk/f2f46c64d11840bb3156c58aa8bfa958/raw/stations.json");
-
     public static new App Current => (App)Application.Current;
 
     public IServiceProvider Services { get; }
@@ -168,9 +161,6 @@ public partial class App : Application
         });
         services.AddSingleton(sp => new SettingsStore(SettingsStore.DefaultPath, sp.GetRequiredService<ILogger<SettingsStore>>()));
         services.AddSingleton<StationRepository>();
-        services.AddSingleton(sp => new StationCatalog(
-            sp.GetRequiredService<StationRepository>(), sp.GetRequiredService<HttpClient>(), RemoteStationsUrl,
-            StationCatalog.DefaultCachePath, sp.GetRequiredService<ILogger<StationCatalog>>()));
         services.AddSingleton(sp => new FavoritesStore(FavoritesStore.DefaultPath, sp.GetRequiredService<ILogger<FavoritesStore>>()));
         services.AddSingleton<RadioBrowserClient>();
         services.AddSingleton<LogoCache>();
