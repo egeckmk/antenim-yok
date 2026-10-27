@@ -50,7 +50,7 @@ public partial class App : Application
     /// Keep it in sync with data/stations.json.
     /// </summary>
     private static readonly Uri? RemoteStationsUrl =
-        new("https://gist.githubusercontent.com/egeckmk/f2f46c64d11840bb3156c58aa8bfa958/raw/gistfile1.txt");
+        new("https://gist.githubusercontent.com/egeckmk/f2f46c64d11840bb3156c58aa8bfa958/raw/stations.json");
 
     public static new App Current => (App)Application.Current;
 

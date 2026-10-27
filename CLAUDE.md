@@ -35,7 +35,7 @@ tests/AntenimYok.Tests/  # xUnit — Core + ViewModel testleri
 - `radioBrowserUuid`: Radio Browser'dan güncel URL çekmek için (`https://all.api.radio-browser.info/json/stations/byuuid/<uuid>`).
 - Şema değişirse Apple tarafını da düşün; alan adlarını keyfi değiştirme.
 - **Uygulamalar listeyi public Gist'ten çeker** (repo gizli): `https://gist.github.com/egeckmk/f2f46c64d11840bb3156c58aa8bfa958`
-  (dosya `gistfile1.txt`; adres `App.xaml.cs` → `RemoteStationsUrl`, raw adresinde revizyon id'si olmamalı).
+  (dosya `stations.json`; adres `App.xaml.cs` → `RemoteStationsUrl`, raw adresinde revizyon id'si olmamalı).
   `data/stations.json` değişince Gist'i de aynı içerikle güncelle (Ege'ye hatırlat; `gh` yok). Uygulama yeni listeyi bir sonraki açılışta kullanır.
 - Kullanıcı verisi `%LOCALAPPDATA%\AntenimYok\`: `settings.json`, `favorites.json` (favoriler; katalog istasyonları katalogdan tazelenir),
   `stations.json` (Gist'ten inen kopya), `logos\`, `crash.log`.
