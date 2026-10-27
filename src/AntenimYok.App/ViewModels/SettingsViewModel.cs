@@ -39,8 +39,19 @@ public sealed partial class SettingsViewModel : ObservableObject
     [ObservableProperty]
     public partial bool CloseToTray { get; set; }
 
-    public string Version =>
-        $"Sürüm {Assembly.GetExecutingAssembly().GetName().Version?.ToString(3) ?? "?"}";
+    /// <summary>"Sürüm 0.4.0 (abc1234)" from Directory.Build.props + the commit the SDK appends ("0.4.0+&lt;sha&gt;").</summary>
+    public string Version
+    {
+        get
+        {
+            var informational = Assembly.GetExecutingAssembly()
+                .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? "?";
+            var parts = informational.Split('+', 2);
+            return parts.Length == 2 && parts[1].Length >= 7
+                ? $"Sürüm {parts[0]} ({parts[1][..7]})"
+                : $"Sürüm {parts[0]}";
+        }
+    }
 
     partial void OnThemeIndexChanged(int value)
     {

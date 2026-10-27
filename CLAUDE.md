@@ -5,6 +5,8 @@ Reklamsız, **sadece kişisel kullanım** için radyo uygulaması (App Store / S
 - Dil: Ege ile **Türkçe** konuş. Kod, tip/metot adları ve commit mesajları İngilizce; arayüz metinleri Türkçe.
 - Plan: `docs/PLAN.md`. Bir sprint maddesi bitince `- [x]` yap.
 - Arayüz işi (XAML/SwiftUI, ekran, bileşen, tema, erişilebilirlik) yaparken **`native-app-ui` skill'ini kullan** (`.claude/skills/native-app-ui/`).
+- Sürüm: SemVer, tek kaynak `Directory.Build.props`. Sürüm çıkarırken, CHANGELOG yazarken ve kullanıcıya görünen
+  her değişikliği commit'lerken **`versioning` skill'ini kullan** (`.claude/skills/versioning/`) → `CHANGELOG.md` `[Yayınlanmadı]`.
 
 ## Platformlar
 | Platform | Teknoloji | Klasör |
