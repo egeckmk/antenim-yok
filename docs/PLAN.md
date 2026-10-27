@@ -14,12 +14,13 @@ Her sprint ≈ 1 akşam / 2–3 saat. Her sprint sonunda çalışan bir exe + k�
 - [x] `native-app-ui` skill'ini repoya `.claude/skills/` altına kopyala
 
 ### Sprint 1 — Çalan MVP
-- [ ] `stations.json` uygulamaya gömülü; istasyon listesi
-- [ ] Tıkla → çal; çal/durdur; ses ayarı
-- [ ] Akış yedeği: ilki çalmazsa `streams` listesindeki sonrakine geç
-- [ ] Durumlar: bağlanıyor / çalıyor / hata ("yayına ulaşılamadı")
-- [ ] `.pls`/`.m3u` → gerçek URL çözümleme (+ test)
-- **Bitti:** İşte 5 istasyon çalıyor.
+- [x] `stations.json` uygulamaya gömülü; istasyon listesi
+- [x] Tıkla → çal; çal/durdur; ses ayarı
+- [x] Akış yedeği: ilki çalmazsa `streams` listesindeki sonrakine geç
+- [x] Durumlar: bağlanıyor / çalıyor / hata ("yayına ulaşılamadı")
+- [x] `.pls`/`.m3u` → gerçek URL çözümleme (+ test)
+- **Bitti:** 8/9 istasyon açılıyor (2026-10-27, UI Automation ile). Best FM bu ağda engelli
+  (TLS denetimi, 403) — başka ağda denenecek. `unverified` akışların hepsi çalıştı, işaret kaldırıldı.
 
 ### Sprint 2 — Windows entegrasyonu
 - [ ] SMTC: klavye medya tuşları, Windows ses penceresinde istasyon adı + logo

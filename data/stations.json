@@ -31,7 +31,7 @@
       "homepage": "https://www.showradyo.com.tr/",
       "radioBrowserUuid": "7f1ef327-ff1c-4027-b679-59e5cf2739c6",
       "streams": [
-        { "url": "https://showradyo.radyotvonline.net/showradyoaac/", "type": "icecast", "codec": "AAC", "bitrate": 128, "unverified": true },
+        { "url": "https://showradyo.radyotvonline.net/showradyoaac/", "type": "icecast", "codec": "AAC", "bitrate": 128 },
         { "url": "http://showradyo.radyotvonline.net/showradyoaac/", "type": "icecast", "codec": "AAC", "bitrate": 128 }
       ]
     },
@@ -52,7 +52,7 @@
       "homepage": "https://metrofm.com.tr/",
       "radioBrowserUuid": "0012c08a-31e7-48c6-87a9-7f64736e0a38",
       "streams": [
-        { "url": "https://playerservices.streamtheworld.com/api/livestream-redirect/METRO_FMAAC_SC", "type": "icecast", "codec": "AAC+", "bitrate": 64, "unverified": true },
+        { "url": "https://playerservices.streamtheworld.com/api/livestream-redirect/METRO_FMAAC_SC", "type": "icecast", "codec": "AAC+", "bitrate": 64 },
         { "url": "https://playerservices.streamtheworld.com/api/livestream-redirect/METRO_FM_SC", "type": "icecast", "codec": "MP3", "bitrate": 64 }
       ]
     },
@@ -63,8 +63,8 @@
       "homepage": "https://www.virginradioturkiye.com/",
       "radioBrowserUuid": "14e157f8-3804-4b74-9086-0a168b8719e1",
       "streams": [
-        { "url": "https://playerservices.streamtheworld.com/api/livestream-redirect/VIRGIN_RADIOAAC_SC", "type": "icecast", "codec": "AAC+", "bitrate": 64, "unverified": true },
-        { "url": "https://playerservices.streamtheworld.com/api/livestream-redirect/VIRGIN_RADIO_SC", "type": "icecast", "codec": "MP3", "bitrate": 64, "unverified": true },
+        { "url": "https://playerservices.streamtheworld.com/api/livestream-redirect/VIRGIN_RADIOAAC_SC", "type": "icecast", "codec": "AAC+", "bitrate": 64 },
+        { "url": "https://playerservices.streamtheworld.com/api/livestream-redirect/VIRGIN_RADIO_SC", "type": "icecast", "codec": "MP3", "bitrate": 64 },
         { "url": "http://29103.live.streamtheworld.com/VIRGIN_RADIO_SC", "type": "icecast", "codec": "MP3", "bitrate": 64 }
       ]
     },
