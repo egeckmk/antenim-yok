@@ -32,7 +32,7 @@ Her sprint ≈ 1 akşam / 2–3 saat. Her sprint sonunda çalışan bir exe + k�
 
 ### Sprint 3 — Tasarım uygulaması
 - [ ] Mica, NavigationView, Favoriler ızgarası, Şimdi Çalıyor çubuğu
-- [ ] Açık/koyu tema, istasyon logoları (önbellekli) — logolar ✅ (pencere + medya penceresi, `%LOCALAPPDATA%AntenimYokogos`); açık tema henüz denenmedi
+- [ ] Açık/koyu tema, istasyon logoları (önbellekli) — logolar ✅ (pencere + medya penceresi, `%LOCALAPPDATA%/AntenimYok/logos`); açık tema henüz denenmedi
 - [ ] Kısayollar: Boşluk = çal/durdur, Ctrl+1..9 = favori, Ctrl+F = ara
 - [ ] Erişilebilirlik + ui-ux-pro-max WinUI kontrol listesi
 - [ ] Mini pencere (opsiyonel)
