@@ -40,9 +40,9 @@ Her sprint ≈ 1 akşam / 2–3 saat. Her sprint sonunda çalışan bir exe + k�
 - [x] Ayarlar: "kapatınca tepside çalmaya devam et", son açık bölüm hatırlanır
 
 ### Sprint 4 — İçerik
-- [ ] Keşfet: Radio Browser API (`countrycode=TR`, arama, tür) → favorilere ekle/çıkar
-- [ ] Şimdi çalan şarkı adı (ICY metadata)
-- [ ] `stations.json`'u GitHub raw'dan çek (Apple uygulamasıyla ortak liste)
+- [x] Keşfet: Radio Browser API (`countrycode=TR`, arama, tür) → favorilere ekle/çıkar (645 farklı radyo; aynı adlı kayıtlar birleştirilir)
+- [x] Şimdi çalan şarkı adı (ICY metadata) — sadece ICY gönderen Icecast yayınlar (şu an Alem, Metro, Virgin); HLS'te yok. Uygulamada canlı görülmedi, elle kontrol edilecek
+- [x] `stations.json`'u public Gist'ten çek (repo gizli; ETag, doğrulama, önbellek; yeni liste bir sonraki açılışta)
 
 ### Sprint 5 — Paketleme
 - [ ] `dotnet publish` self-contained (WindowsAppSDKSelfContained), kullanıcı klasörüne kurulum, admin yok
