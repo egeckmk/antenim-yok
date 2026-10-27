@@ -1,0 +1,30 @@
+# Visual Studio / .NET
+.vs/
+bin/
+obj/
+*.user
+*.suo
+*.userprefs
+*.rsuser
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+ARM64/
+AppPackages/
+BundleArtifacts/
+*.appx
+*.msix
+*.pfx
+TestResults/
+*.binlog
+publish/
+
+# Xcode (sonra)
+xcuserdata/
+DerivedData/
+*.xcuserstate
+
+# OS
+.DS_Store
+Thumbs.db
