@@ -1,5 +1,7 @@
 using System;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
+using AntenimYok.App.Services;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.UI.Dispatching;
@@ -17,9 +19,23 @@ public static partial class Program
     private static int Main(string[] args)
     {
         WinRT.ComWrappersSupport.InitializeComWrappers();
+        AppIdentity.SetForProcess();
 
         if (RedirectToRunningInstance())
             return 0;
+
+        Task.Run(() =>
+        {
+            try
+            {
+                AppIdentity.EnsureStartMenuShortcut();
+            }
+            catch (Exception ex)
+            {
+                // Only costs "open from the media card"; never block startup.
+                Debug.WriteLine($"Start menu shortcut failed: {ex}");
+            }
+        });
 
         Application.Start(p =>
         {
