@@ -35,6 +35,15 @@ public partial class App : Application
     {
         _window = new MainWindow(Services.GetRequiredService<MainViewModel>(), Settings);
         Services.GetRequiredService<ThemeService>().Register(_window);
+        try
+        {
+            Services.GetRequiredService<MediaControlsService>().Attach(WinRT.Interop.WindowNative.GetWindowHandle(_window));
+        }
+        catch (Exception ex)
+        {
+            // Without it only media keys / the Quick Settings card are missing; the app itself still works.
+            Services.GetRequiredService<ILogger<App>>().LogError(ex, "Could not create the media session");
+        }
         _window.Activate();
 
         // A second launch (see Program) lands here: bring the existing window back.

@@ -1,11 +1,13 @@
 using System;
 using System.IO;
+using System.Runtime.InteropServices;
 using AntenimYok.Core.Playback;
 using AntenimYok.Core.Stations;
 using Microsoft.Extensions.Logging;
 using Windows.Media;
 using Windows.Storage;
 using Windows.Storage.Streams;
+using WinRT;
 
 namespace AntenimYok.App.Services;
 
@@ -20,34 +22,42 @@ public enum MediaCommand
 /// <summary>
 /// Windows media overlay / keyboard media keys (SystemMediaTransportControls):
 /// shows the station and forwards button presses as <see cref="MediaCommand"/>s.
+/// The session is tied to the main window, so clicking the media card in Quick Settings brings that window up.
 /// </summary>
-public sealed class MediaControlsService
+public sealed class MediaControlsService(RadioPlayer radio, LogoCache logos, ILogger<MediaControlsService> logger)
 {
-    private readonly SystemMediaTransportControls _controls;
-    private readonly RadioPlayer _radio;
-    private readonly LogoCache _logos;
-    private readonly ILogger<MediaControlsService> _logger;
+    private static readonly Guid SystemMediaTransportControlsIid = new("99FA3FF4-1742-42A6-902E-087D41F965EC");
+
+    private SystemMediaTransportControls? _controls;
     private Station? _shownStation;
 
-    public MediaControlsService(MediaPlayerStreamPlayer player, RadioPlayer radio, LogoCache logos, ILogger<MediaControlsService> logger)
-    {
-        _controls = player.MediaControls;
-        _radio = radio;
-        _logos = logos;
-        _logger = logger;
+    /// <summary>Raised on a background thread.</summary>
+    public event EventHandler<MediaCommand>? CommandReceived;
 
-        _controls.IsEnabled = true;
+    /// <summary>Creates the session for <paramref name="windowHandle"/>; call once the main window exists.</summary>
+    public void Attach(IntPtr windowHandle)
+    {
+        var interop = SystemMediaTransportControls.As<ISystemMediaTransportControlsInterop>();
+        var iid = SystemMediaTransportControlsIid;
+        var abi = interop.GetForWindow(windowHandle, ref iid);
+        try
+        {
+            _controls = MarshalInspectable<SystemMediaTransportControls>.FromAbi(abi);
+        }
+        finally
+        {
+            Marshal.Release(abi);
+        }
+
         _controls.IsPlayEnabled = true;
         _controls.IsPauseEnabled = true;
         _controls.IsStopEnabled = true;
         _controls.IsNextEnabled = true;
         _controls.IsPreviousEnabled = true;
         _controls.ButtonPressed += OnButtonPressed;
-        _radio.StateChanged += (_, _) => Update();
+        radio.StateChanged += (_, _) => Update();
+        Update();
     }
-
-    /// <summary>Raised on a background thread.</summary>
-    public event EventHandler<MediaCommand>? CommandReceived;
 
     private void OnButtonPressed(SystemMediaTransportControls sender, SystemMediaTransportControlsButtonPressedEventArgs args)
     {
@@ -66,25 +76,30 @@ public sealed class MediaControlsService
 
     private void Update()
     {
-        _controls.PlaybackStatus = _radio.State switch
+        if (_controls is null)
+            return;
+
+        // The card only shows up once something has played.
+        _controls.IsEnabled = radio.CurrentStation is not null;
+        _controls.PlaybackStatus = radio.State switch
         {
             PlaybackState.Playing => MediaPlaybackStatus.Playing,
             PlaybackState.Connecting or PlaybackState.Reconnecting => MediaPlaybackStatus.Changing,
             _ => MediaPlaybackStatus.Stopped,
         };
 
-        var station = _radio.CurrentStation;
+        var station = radio.CurrentStation;
         if (station is null || station == _shownStation)
             return;
         _shownStation = station;
-        UpdateDisplay(station);
+        UpdateDisplay(_controls, station);
     }
 
-    private async void UpdateDisplay(Station station)
+    private async void UpdateDisplay(SystemMediaTransportControls controls, Station station)
     {
         try
         {
-            var updater = _controls.DisplayUpdater;
+            var updater = controls.DisplayUpdater;
             updater.ClearAll();
             updater.Type = MediaPlaybackType.Music;
             updater.MusicProperties.Title = station.Name;
@@ -93,7 +108,7 @@ public sealed class MediaControlsService
             updater.Update();
 
             // Cached PNG: works for ICO/WebP logos and when the logo host is blocked later.
-            var imagePath = await _logos.GetPathAsync(station)
+            var imagePath = await logos.GetPathAsync(station)
                 ?? Path.Combine(AppContext.BaseDirectory, "Assets", "AppIcon.png");
             var file = await StorageFile.GetFileFromPathAsync(imagePath);
             if (_shownStation != station)
@@ -104,7 +119,20 @@ public sealed class MediaControlsService
         catch (Exception ex)
         {
             // async void: never let this escape.
-            _logger.LogWarning(ex, "Could not update media overlay for {Station}", station.Name);
+            logger.LogWarning(ex, "Could not update media overlay for {Station}", station.Name);
         }
+    }
+
+    // IInspectable-based; .NET only marshals IUnknown, so the three IInspectable slots are declared as placeholders.
+    [ComImport]
+    [Guid("ddb0472d-c911-4a1f-86d9-dc3d71a95f5a")]
+    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+    private interface ISystemMediaTransportControlsInterop
+    {
+        void GetIids();
+        void GetRuntimeClassName();
+        void GetTrustLevel();
+
+        IntPtr GetForWindow(IntPtr appWindow, ref Guid riid);
     }
 }

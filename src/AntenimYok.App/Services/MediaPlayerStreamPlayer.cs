@@ -28,8 +28,9 @@ public sealed class MediaPlayerStreamPlayer : IStreamPlayer, IDisposable
 
     public MediaPlayerStreamPlayer()
     {
-        // Media keys are handled by MediaControlsService (radio: pause = stop, next = next station).
+        // MediaControlsService owns the (window-bound) media session; the player's own one stays off.
         _player.CommandManager.IsEnabled = false;
+        _player.SystemMediaTransportControls.IsEnabled = false;
         _player.MediaOpened += OnMediaOpened;
         _player.MediaFailed += OnMediaFailed;
         _player.MediaEnded += OnMediaEnded;
@@ -38,8 +39,6 @@ public sealed class MediaPlayerStreamPlayer : IStreamPlayer, IDisposable
     }
 
     public event EventHandler? PlaybackFailed;
-
-    public SystemMediaTransportControls MediaControls => _player.SystemMediaTransportControls;
 
     public double Volume
     {
