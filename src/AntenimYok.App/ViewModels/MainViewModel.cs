@@ -10,6 +10,9 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
+using Microsoft.UI.Xaml.Media.Imaging;
+using Windows.Storage;
+using Windows.Storage.Streams;
 
 namespace AntenimYok.App.ViewModels;
 
@@ -18,6 +21,7 @@ public sealed partial class MainViewModel : ObservableObject
     private readonly StationRepository _repository;
     private readonly RadioPlayer _player;
     private readonly SettingsStore _settings;
+    private readonly LogoCache _logos;
     private readonly ILogger<MainViewModel> _logger;
     private readonly DispatcherQueue _dispatcher;
 
@@ -25,12 +29,14 @@ public sealed partial class MainViewModel : ObservableObject
         StationRepository repository,
         RadioPlayer player,
         SettingsStore settings,
+        LogoCache logos,
         MediaControlsService mediaControls,
         ILogger<MainViewModel> logger)
     {
         _repository = repository;
         _player = player;
         _settings = settings;
+        _logos = logos;
         _logger = logger;
         _dispatcher = DispatcherQueue.GetForCurrentThread();
         _player.StateChanged += (_, _) => _dispatcher.TryEnqueue(SyncFromPlayer);
@@ -42,10 +48,10 @@ public sealed partial class MainViewModel : ObservableObject
         _player.IsMuted = settings.Current.IsMuted;
     }
 
-    public ObservableCollection<Station> Stations { get; } = [];
+    public ObservableCollection<StationItem> Stations { get; } = [];
 
     [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(HasStation), nameof(StationName), nameof(StationInitials), nameof(StatusText), nameof(TrayToolTip))]
+    [NotifyPropertyChangedFor(nameof(HasStation), nameof(StationName), nameof(CurrentItem), nameof(StatusText), nameof(TrayToolTip))]
     [NotifyCanExecuteChangedFor(nameof(TogglePlaybackCommand))]
     public partial Station? CurrentStation { get; private set; }
 
@@ -74,7 +80,7 @@ public sealed partial class MainViewModel : ObservableObject
     public bool HasError => State == PlaybackState.Error;
 
     public string StationName => CurrentStation?.Name ?? "Bir istasyon seçin";
-    public string StationInitials => CurrentStation?.Initials ?? string.Empty;
+    public StationItem? CurrentItem => Stations.FirstOrDefault(i => i.Station == CurrentStation);
 
     public string StatusText => State switch
     {
@@ -90,9 +96,9 @@ public sealed partial class MainViewModel : ObservableObject
         ? $"Antenim Yok — {station.Name}"
         : "Antenim Yok";
 
-    public string PlayStopGlyph => IsActive ? "" : ""; // Stop / Play
+    public string PlayStopGlyph => Glyph(IsActive ? 0xE71A : 0xE768); // Stop / Play
     public string PlayStopLabel => IsActive ? "Durdur" : "Çal";
-    public string MuteGlyph => IsMuted ? "" : ""; // Mute / Volume
+    public string MuteGlyph => Glyph(IsMuted ? 0xE74F : 0xE767); // Mute / Volume
     public string MuteLabel => IsMuted ? "Sesi aç" : "Sesi kapat";
 
     [RelayCommand]
@@ -104,15 +110,37 @@ public sealed partial class MainViewModel : ObservableObject
             var stations = await _repository.LoadEmbeddedAsync();
             Stations.Clear();
             foreach (var station in stations)
-                Stations.Add(station);
+            {
+                var item = new StationItem(station);
+                Stations.Add(item);
+                _ = LoadLogoAsync(item);
+            }
 
             // Show the last station in the bar (not auto-playing).
-            CurrentStation ??= Stations.FirstOrDefault(s => s.Id == _settings.Current.LastStationId);
+            CurrentStation ??= stations.FirstOrDefault(s => s.Id == _settings.Current.LastStationId);
+            OnPropertyChanged(nameof(CurrentItem));
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Could not load stations");
             LoadFailed = true;
+        }
+    }
+
+    private async Task LoadLogoAsync(StationItem item)
+    {
+        try
+        {
+            if (await _logos.GetPathAsync(item.Station) is not { } path)
+                return;
+            var bitmap = new BitmapImage();
+            using (var stream = await FileRandomAccessStream.OpenAsync(path, FileAccessMode.Read))
+                await bitmap.SetSourceAsync(stream);
+            item.Logo = bitmap;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Could not show logo for {Station}", item.Name);
         }
     }
 
@@ -172,11 +200,11 @@ public sealed partial class MainViewModel : ObservableObject
     {
         if (Stations.Count == 0)
             return;
-        var index = CurrentStation is null ? -1 : Stations.IndexOf(CurrentStation);
+        var index = CurrentItem is { } current ? Stations.IndexOf(current) : -1;
         var next = index < 0
             ? Stations[0]
             : Stations[((index + offset) % Stations.Count + Stations.Count) % Stations.Count];
-        await _player.PlayAsync(next);
+        await _player.PlayAsync(next.Station);
     }
 
     partial void OnVolumeChanged(double value)
@@ -203,6 +231,9 @@ public sealed partial class MainViewModel : ObservableObject
         if (State == PlaybackState.Playing && CurrentStation is { } station)
             _settings.Update(s => s with { LastStationId = station.Id });
     }
+
+    // Segoe Fluent Icons code point.
+    private static string Glyph(int codePoint) => char.ConvertFromUtf32(codePoint);
 
     private static string FormatStream(StationStream? stream)
     {

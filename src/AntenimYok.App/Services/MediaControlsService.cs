@@ -25,13 +25,15 @@ public sealed class MediaControlsService
 {
     private readonly SystemMediaTransportControls _controls;
     private readonly RadioPlayer _radio;
+    private readonly LogoCache _logos;
     private readonly ILogger<MediaControlsService> _logger;
     private Station? _shownStation;
 
-    public MediaControlsService(MediaPlayerStreamPlayer player, RadioPlayer radio, ILogger<MediaControlsService> logger)
+    public MediaControlsService(MediaPlayerStreamPlayer player, RadioPlayer radio, LogoCache logos, ILogger<MediaControlsService> logger)
     {
         _controls = player.MediaControls;
         _radio = radio;
+        _logos = logos;
         _logger = logger;
 
         _controls.IsEnabled = true;
@@ -88,18 +90,15 @@ public sealed class MediaControlsService
             updater.MusicProperties.Title = station.Name;
             updater.MusicProperties.Artist = "Antenim Yok";
 
-            if (Uri.TryCreate(station.Logo, UriKind.Absolute, out var logo))
-            {
-                updater.Thumbnail = RandomAccessStreamReference.CreateFromUri(logo);
-            }
-            else
-            {
-                var iconPath = Path.Combine(AppContext.BaseDirectory, "Assets", "AppIcon.png");
-                var file = await StorageFile.GetFileFromPathAsync(iconPath);
-                if (_shownStation != station)
-                    return;
-                updater.Thumbnail = RandomAccessStreamReference.CreateFromFile(file);
-            }
+            updater.Update();
+
+            // Cached PNG: works for ICO/WebP logos and when the logo host is blocked later.
+            var imagePath = await _logos.GetPathAsync(station)
+                ?? Path.Combine(AppContext.BaseDirectory, "Assets", "AppIcon.png");
+            var file = await StorageFile.GetFileFromPathAsync(imagePath);
+            if (_shownStation != station)
+                return;
+            updater.Thumbnail = RandomAccessStreamReference.CreateFromFile(file);
             updater.Update();
         }
         catch (Exception ex)

@@ -58,6 +58,7 @@ public partial class App : Application
         });
         services.AddSingleton(sp => new SettingsStore(SettingsStore.DefaultPath, sp.GetRequiredService<ILogger<SettingsStore>>()));
         services.AddSingleton<StationRepository>();
+        services.AddSingleton<LogoCache>();
         services.AddSingleton<IStreamResolver, StreamResolver>();
         services.AddSingleton<MediaPlayerStreamPlayer>();
         services.AddSingleton<IStreamPlayer>(sp => sp.GetRequiredService<MediaPlayerStreamPlayer>());

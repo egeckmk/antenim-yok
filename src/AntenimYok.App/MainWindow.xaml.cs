@@ -2,7 +2,6 @@ using System;
 using System.IO;
 using AntenimYok.App.ViewModels;
 using AntenimYok.Core.Settings;
-using AntenimYok.Core.Stations;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
@@ -66,13 +65,13 @@ public sealed partial class MainWindow : Window
         {
             _trayHintShown = true;
             TrayIcon.ShowNotification("Antenim Yok çalmaya devam ediyor",
-                "Simge durumundaki tepsi simgesinden açabilir veya çıkabilirsiniz.");
+                "Görev çubuğundaki simgeden yeniden açabilir veya çıkabilirsiniz.");
         }
     }
 
     private void OnStationClick(object sender, ItemClickEventArgs e)
     {
-        if (e.ClickedItem is Station station)
-            ViewModel.PlayStationCommand.Execute(station);
+        if (e.ClickedItem is StationItem item)
+            ViewModel.PlayStationCommand.Execute(item.Station);
     }
 }

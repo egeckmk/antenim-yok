@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl
+    x:Class="AntenimYok.App.Controls.StationLogo"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:AntenimYok.App.Controls"
+    AutomationProperties.AccessibilityView="Raw">
+
+    <!--  Logo if loaded, otherwise the station initials on a neutral tile  -->
+    <Border
+        Background="{ThemeResource ControlFillColorSecondaryBrush}"
+        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+        BorderThickness="1"
+        CornerRadius="{x:Bind CornerRadius, Mode=OneWay}">
+        <Grid>
+            <Border Background="{ThemeResource LogoDarkPlateBrush}" Visibility="{x:Bind local:StationLogo.IsVisible(Item.LogoOnDarkOnly, Item.HasLogo), Mode=OneWay, FallbackValue=Collapsed}" />
+            <TextBlock
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                Style="{x:Bind InitialsStyle, Mode=OneWay}"
+                Text="{x:Bind Item.Initials, Mode=OneWay}"
+                Visibility="{x:Bind local:StationLogo.IsCollapsed(Item.HasLogo), Mode=OneWay}" />
+            <Image Source="{x:Bind Item.Logo, Mode=OneWay}" Stretch="Uniform" />
+        </Grid>
+    </Border>
+</UserControl>

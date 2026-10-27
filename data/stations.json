@@ -48,7 +48,7 @@
     {
       "id": "metro-fm",
       "name": "Metro FM",
-      "logo": "https://metrofm.com.tr/favicon.ico",
+      "logo": "https://mediacdns.karnaval.com/media/station_media/2/logos/meta_image.png",
       "homepage": "https://metrofm.com.tr/",
       "radioBrowserUuid": "0012c08a-31e7-48c6-87a9-7f64736e0a38",
       "streams": [
@@ -59,7 +59,7 @@
     {
       "id": "virgin-radio",
       "name": "Virgin Radio Türkiye",
-      "logo": "https://i.karnavalcdn.com/media/site_media/icons/android-icon-192x192.png",
+      "logo": "https://mediacdns.karnaval.com/media/station_media/15/logos/meta_image.png",
       "homepage": "https://www.virginradioturkiye.com/",
       "radioBrowserUuid": "14e157f8-3804-4b74-9086-0a168b8719e1",
       "streams": [
@@ -71,7 +71,7 @@
     {
       "id": "power-turk",
       "name": "Power Türk",
-      "logo": null,
+      "logo": "https://cdn.powergroup.com.tr/image/100x100/powerapp/channels/v3/inverse/logo_34.png",
       "homepage": "https://www.powerapp.com.tr/",
       "radioBrowserUuid": "43061315-2893-46fa-ae1e-96e767d5bce3",
       "streams": [
@@ -81,7 +81,7 @@
     {
       "id": "radyo-fenomen",
       "name": "Radyo Fenomen",
-      "logo": null,
+      "logo": "https://cdn.radyofenomen.com/artwork/logo20.png",
       "homepage": "https://www.radyofenomen.com/",
       "radioBrowserUuid": "b3e6320b-0ffc-4d4e-a999-2467897b17e6",
       "streams": [
@@ -91,7 +91,8 @@
     {
       "id": "kafa-radyo",
       "name": "Kafa Radyo",
-      "logo": null,
+      "logo": "https://kafaradyo.com/assets/img/logo.webp",
+      "logoOnDarkOnly": true,
       "homepage": "https://kafaradyo.com/",
       "radioBrowserUuid": "4dc09559-aa5c-4ecd-a8cf-4fc450471ae4",
       "streams": [

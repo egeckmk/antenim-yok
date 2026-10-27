@@ -3,7 +3,8 @@
     x:Class="AntenimYok.App.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:stations="using:AntenimYok.Core.Stations"
+    xmlns:controls="using:AntenimYok.App.Controls"
+    xmlns:vm="using:AntenimYok.App.ViewModels"
     xmlns:tb="using:H.NotifyIcon"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -69,27 +70,19 @@
             ItemsSource="{x:Bind ViewModel.Stations}"
             SelectionMode="None">
             <GridView.ItemTemplate>
-                <DataTemplate x:DataType="stations:Station">
+                <DataTemplate x:DataType="vm:StationItem">
                     <StackPanel
                         Width="112"
                         Padding="0,8"
                         AutomationProperties.Name="{x:Bind Name}"
                         Spacing="8"
                         ToolTipService.ToolTip="{x:Bind Name}">
-                        <Border
+                        <controls:StationLogo
                             Width="96"
                             Height="96"
-                            Background="{ThemeResource ControlFillColorSecondaryBrush}"
-                            BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-                            BorderThickness="1"
-                            CornerRadius="{StaticResource OverlayCornerRadius}">
-                            <TextBlock
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                Style="{StaticResource SubtitleTextBlockStyle}"
-                                Text="{x:Bind Initials}" />
-                        </Border>
+                            CornerRadius="{StaticResource OverlayCornerRadius}"
+                            InitialsStyle="{StaticResource SubtitleTextBlockStyle}"
+                            Item="{x:Bind}" />
                         <TextBlock
                             HorizontalAlignment="Center"
                             Style="{StaticResource BodyTextBlockStyle}"
@@ -111,18 +104,12 @@
             ColumnDefinitions="Auto,*,Auto,Auto"
             ColumnSpacing="12">
 
-            <Border
+            <controls:StationLogo
                 Width="48"
                 Height="48"
-                Background="{ThemeResource ControlFillColorSecondaryBrush}"
-                CornerRadius="{StaticResource ControlCornerRadius}">
-                <TextBlock
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                    Style="{StaticResource BodyStrongTextBlockStyle}"
-                    Text="{x:Bind ViewModel.StationInitials, Mode=OneWay}" />
-            </Border>
+                CornerRadius="{StaticResource ControlCornerRadius}"
+                InitialsStyle="{StaticResource BodyStrongTextBlockStyle}"
+                Item="{x:Bind ViewModel.CurrentItem, Mode=OneWay}" />
 
             <StackPanel Grid.Column="1" VerticalAlignment="Center">
                 <TextBlock
