@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using AntenimYok.Core.Playback;
 using AntenimYok.Core.Stations;
+using Windows.Media;
 using Windows.Media.Core;
 using Windows.Media.Playback;
 using Windows.Media.Streaming.Adaptive;
@@ -10,25 +11,35 @@ using Windows.Media.Streaming.Adaptive;
 namespace AntenimYok.App.Services;
 
 /// <summary><see cref="IStreamPlayer"/> on top of <see cref="MediaPlayer"/> (HLS via AdaptiveMediaSource).</summary>
-internal sealed class MediaPlayerStreamPlayer : IStreamPlayer, IDisposable
+public sealed class MediaPlayerStreamPlayer : IStreamPlayer, IDisposable
 {
+    // A live stream that buffers this long has effectively dropped (e.g. network gone without an error).
+    private static readonly TimeSpan StallTimeout = TimeSpan.FromSeconds(15);
+
     private readonly MediaPlayer _player = new()
     {
         AutoPlay = false,
         AudioCategory = MediaPlayerAudioCategory.Media,
     };
 
+    private readonly Timer _stallTimer;
     private TaskCompletionSource? _pendingOpen;
     private MediaSource? _source;
 
     public MediaPlayerStreamPlayer()
     {
+        // Media keys are handled by MediaControlsService (radio: pause = stop, next = next station).
+        _player.CommandManager.IsEnabled = false;
         _player.MediaOpened += OnMediaOpened;
         _player.MediaFailed += OnMediaFailed;
         _player.MediaEnded += OnMediaEnded;
+        _player.PlaybackSession.PlaybackStateChanged += OnPlaybackStateChanged;
+        _stallTimer = new Timer(OnStalled);
     }
 
     public event EventHandler? PlaybackFailed;
+
+    public SystemMediaTransportControls MediaControls => _player.SystemMediaTransportControls;
 
     public double Volume
     {
@@ -90,6 +101,7 @@ internal sealed class MediaPlayerStreamPlayer : IStreamPlayer, IDisposable
 
     public void Stop()
     {
+        _stallTimer.Change(Timeout.Infinite, Timeout.Infinite);
         _pendingOpen?.TrySetCanceled();
         _pendingOpen = null;
         _player.Pause();
@@ -112,9 +124,27 @@ internal sealed class MediaPlayerStreamPlayer : IStreamPlayer, IDisposable
     // A live stream should never end; treat it as a dropped connection.
     private void OnMediaEnded(MediaPlayer sender, object args) => PlaybackFailed?.Invoke(this, EventArgs.Empty);
 
+    private void OnPlaybackStateChanged(MediaPlaybackSession session, object args)
+    {
+        if (session.PlaybackState == MediaPlaybackState.Buffering && _source is not null)
+            _stallTimer.Change(StallTimeout, Timeout.InfiniteTimeSpan);
+        else
+            _stallTimer.Change(Timeout.Infinite, Timeout.Infinite);
+    }
+
+    private void OnStalled(object? state)
+    {
+        if (_pendingOpen is null && _source is not null
+            && _player.PlaybackSession.PlaybackState == MediaPlaybackState.Buffering)
+        {
+            PlaybackFailed?.Invoke(this, EventArgs.Empty);
+        }
+    }
+
     public void Dispose()
     {
         Stop();
+        _stallTimer.Dispose();
         _player.Dispose();
     }
 }

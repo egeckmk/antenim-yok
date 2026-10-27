@@ -23,11 +23,12 @@ Her sprint ≈ 1 akşam / 2–3 saat. Her sprint sonunda çalışan bir exe + k�
   (TLS denetimi, 403) — başka ağda denenecek. `unverified` akışların hepsi çalıştı, işaret kaldırıldı.
 
 ### Sprint 2 — Windows entegrasyonu
-- [ ] SMTC: klavye medya tuşları, Windows ses penceresinde istasyon adı + logo
-- [ ] Tepsi simgesi; kapatınca tepside çalmaya devam
-- [ ] Tek örnek (ikinci açılışta mevcut pencere öne gelir)
-- [ ] Son istasyon + ses seviyesi hatırlanır
-- [ ] Ağ koparsa otomatik yeniden bağlanma
+- [x] SMTC: klavye medya tuşları, Windows ses penceresinde istasyon adı + logo (oynat/duraklat = çal/durdur, ileri/geri = sonraki/önceki istasyon)
+- [x] Tepsi simgesi; kapatınca tepside çalmaya devam (gerçek çıkış: tepsi menüsü → Çıkış)
+- [x] Tek örnek (ikinci açılışta mevcut pencere öne gelir)
+- [x] Son istasyon + ses seviyesi hatırlanır (`%LOCALAPPDATA%\AntenimYok\settings.json`)
+- [x] Ağ koparsa otomatik yeniden bağlanma (artan bekleme ~5 dk; ağ geri gelince hemen dener; 15 sn takılan akış kopmuş sayılır)
+- **Not:** Uygulama ikonu geçici (koyu kare + Fluent anten glifi, `Assets/AppIcon.ico`). Yeniden bağlanma birim testli; gerçek ağ kopması elle denenecek.
 
 ### Sprint 3 — Tasarım uygulaması
 - [ ] Mica, NavigationView, Favoriler ızgarası, Şimdi Çalıyor çubuğu

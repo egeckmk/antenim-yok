@@ -13,10 +13,11 @@ public class RadioPlayerTests
         Streams = urls.Select(u => new StationStream { Url = u }).ToList(),
     };
 
-    private static RadioPlayer MakePlayer(FakeStreamPlayer fake, TimeSpan? timeout = null) =>
+    private static RadioPlayer MakePlayer(FakeStreamPlayer fake, TimeSpan? timeout = null, TimeSpan[]? reconnectDelays = null) =>
         new(fake, new PassThroughResolver(), NullLogger<RadioPlayer>.Instance)
         {
             OpenTimeout = timeout ?? TimeSpan.FromSeconds(5),
+            ReconnectDelays = reconnectDelays ?? RadioPlayer.DefaultReconnectDelays,
         };
 
     [Fact]
@@ -103,15 +104,86 @@ public class RadioPlayerTests
     }
 
     [Fact]
-    public async Task PlaybackFailed_WhilePlaying_ReportsError()
+    public async Task PlaybackFailed_WhilePlaying_ReconnectsAndPlaysAgain()
+    {
+        var fake = new FakeStreamPlayer();
+        var player = MakePlayer(fake, reconnectDelays: [TimeSpan.FromMilliseconds(10)]);
+        await player.PlayAsync(MakeStation("https://a/1"));
+        var playing = WaitForState(player, PlaybackState.Playing);
+
+        fake.RaiseFailed();
+        Assert.Equal(PlaybackState.Reconnecting, player.State);
+
+        await playing.WaitAsync(TimeSpan.FromSeconds(5));
+        Assert.Equal(["https://a/1", "https://a/1"], fake.Opened);
+    }
+
+    [Fact]
+    public async Task Reconnect_AllAttemptsFail_ReportsError()
+    {
+        var fake = new FakeStreamPlayer();
+        var player = MakePlayer(fake, reconnectDelays: [TimeSpan.FromMilliseconds(10), TimeSpan.FromMilliseconds(10)]);
+        await player.PlayAsync(MakeStation("https://a/1"));
+        var error = WaitForState(player, PlaybackState.Error);
+
+        fake.Failing.Add("https://a/1");
+        fake.RaiseFailed();
+
+        await error.WaitAsync(TimeSpan.FromSeconds(5));
+        Assert.Equal(3, fake.Opened.Count); // initial + 2 attempts
+    }
+
+    [Fact]
+    public async Task Reconnect_NetworkAvailable_SkipsWait()
+    {
+        var fake = new FakeStreamPlayer();
+        var player = MakePlayer(fake, reconnectDelays: [TimeSpan.FromHours(1)]);
+        await player.PlayAsync(MakeStation("https://a/1"));
+        var playing = WaitForState(player, PlaybackState.Playing);
+
+        fake.RaiseFailed();
+        player.NotifyNetworkAvailable();
+
+        await playing.WaitAsync(TimeSpan.FromSeconds(5));
+    }
+
+    [Fact]
+    public async Task Stop_WhileReconnecting_EndsStopped()
+    {
+        var fake = new FakeStreamPlayer();
+        var player = MakePlayer(fake, reconnectDelays: [TimeSpan.FromMilliseconds(50)]);
+        await player.PlayAsync(MakeStation("https://a/1"));
+
+        fake.RaiseFailed();
+        player.Stop();
+        await Task.Delay(200);
+
+        Assert.Equal(PlaybackState.Stopped, player.State);
+        Assert.Single(fake.Opened);
+    }
+
+    [Fact]
+    public async Task PlaybackFailed_WhenNotPlaying_IsIgnored()
     {
         var fake = new FakeStreamPlayer();
         var player = MakePlayer(fake);
         await player.PlayAsync(MakeStation("https://a/1"));
+        player.Stop();
 
         fake.RaiseFailed();
 
-        Assert.Equal(PlaybackState.Error, player.State);
+        Assert.Equal(PlaybackState.Stopped, player.State);
+    }
+
+    private static Task WaitForState(RadioPlayer player, PlaybackState state)
+    {
+        var tcs = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        player.StateChanged += (_, _) =>
+        {
+            if (player.State == state)
+                tcs.TrySetResult();
+        };
+        return tcs.Task;
     }
 
     [Fact]
