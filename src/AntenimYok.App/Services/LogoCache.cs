@@ -34,7 +34,7 @@ public sealed class LogoCache(HttpClient http, ILogger<LogoCache> logger)
 
     private async Task<string?> LoadAsync(string stationId, string url)
     {
-        // The URL hash in the name means an edited logo URL in stations.json is fetched again.
+        // The URL hash in the name means a changed logo URL is fetched again.
         var path = Path.Combine(_directory, $"{stationId}-{Hash(url)}.png");
         if (File.Exists(path))
             return path;

@@ -6,8 +6,7 @@ namespace AntenimYok.Core.Stations;
 
 /// <summary>
 /// The user's favorites (order matters: Ctrl+1…9, next/previous), kept locally in favorites.json.
-/// Starts empty. Each favorite is stored as a full snapshot so stations found on Radio Browser survive restarts;
-/// favorites that are also in the built-in catalog (stations.json) get the catalog's verified data on <see cref="Load"/>.
+/// Starts empty. Each favorite is stored as a full snapshot (streams, logo), so it plays without any lookup.
 /// </summary>
 public sealed class FavoritesStore(string path, ILogger<FavoritesStore> logger)
 {
@@ -36,30 +35,12 @@ public sealed class FavoritesStore(string path, ILogger<FavoritesStore> logger)
         }
     }
 
-    /// <summary>
-    /// Loads favorites (empty on first run). Favorites that are catalog stations — same id, or a
-    /// Radio Browser station with the catalog entry's Radio Browser id — get the catalog's current data.
-    /// </summary>
-    public IReadOnlyList<Station> Load(IReadOnlyList<Station> catalog)
+    /// <summary>Loads favorites from disk (empty on first run).</summary>
+    public IReadOnlyList<Station> Load()
     {
         lock (_gate)
         {
-            _favorites = ReadFile()?.Stations.ToList() ?? [];
-
-            var byId = catalog.ToDictionary(s => s.Id);
-            var byUuid = catalog
-                .Where(s => s.RadioBrowserUuid is not null)
-                .GroupBy(s => s.RadioBrowserUuid!)
-                .ToDictionary(g => g.Key, g => g.First());
-
-            // Radio Browser favorite that is now in the catalog → use the catalog entry.
-            _favorites = _favorites
-                .Select(f => byId.GetValueOrDefault(f.Id)
-                    ?? (f.RadioBrowserUuid is { } uuid ? byUuid.GetValueOrDefault(uuid) : null)
-                    ?? f)
-                .DistinctBy(f => f.Id)
-                .ToList();
-
+            _favorites = (ReadFile()?.Stations ?? []).DistinctBy(f => f.Id).ToList();
             return _favorites.ToList();
         }
     }
@@ -108,11 +89,7 @@ public sealed class FavoritesStore(string path, ILogger<FavoritesStore> logger)
     {
         try
         {
-            Directory.CreateDirectory(Path.GetDirectoryName(path)!);
-            var temp = path + ".tmp";
-            var file = new FavoritesFile { Stations = _favorites };
-            File.WriteAllText(temp, JsonSerializer.Serialize(file, JsonOptions));
-            File.Move(temp, path, overwrite: true);
+            AtomicFile.WriteAllText(path, JsonSerializer.Serialize(new FavoritesFile { Stations = _favorites }, JsonOptions));
         }
         catch (Exception ex)
         {

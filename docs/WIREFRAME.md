@@ -17,7 +17,7 @@ Kaba yerleşim; renk/punto yok. Uygulama (Sprint 3) bu iskeleti izler, ayrıntı
 └───────────────────────────────────────────────────────┘
 ```
 - Sol menü: `NavigationView` (dar pencerede kapanır). Bölümler: **Favoriler** (varsayılan), **Keşfet**, **Ayarlar** (altta).
-- Favoriler: başlangıçta `stations.json`'daki istasyonlar; ekle/çıkar Keşfet'ten (Sprint 4).
+- Favoriler: başta boş (boş durum + "Keşfet'e git"); ekle/çıkar Keşfet'ten.
 - Keşfet: Radio Browser araması (Sprint 4). O zamana kadar boş durum.
 - Alt çubuk (Şimdi Çalıyor) her bölümde görünür. `⧉` = mini pencereye geç.
 

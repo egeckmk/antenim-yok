@@ -87,15 +87,6 @@
                             <Button Command="{x:Bind ViewModel.RetryCommand}" Content="Tekrar dene" />
                         </InfoBar.ActionButton>
                     </InfoBar>
-                    <InfoBar
-                        Title="İstasyon listesi yüklenemedi"
-                        IsClosable="False"
-                        IsOpen="{x:Bind ViewModel.LoadFailed, Mode=OneWay}"
-                        Severity="Error">
-                        <InfoBar.ActionButton>
-                            <Button Command="{x:Bind ViewModel.LoadCommand}" Content="Tekrar dene" />
-                        </InfoBar.ActionButton>
-                    </InfoBar>
                 </StackPanel>
                 <Frame x:Name="ContentFrame" Grid.Row="1" />
             </Grid>

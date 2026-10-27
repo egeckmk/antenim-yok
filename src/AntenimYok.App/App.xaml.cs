@@ -160,7 +160,6 @@ public partial class App : Application
             return http;
         });
         services.AddSingleton(sp => new SettingsStore(SettingsStore.DefaultPath, sp.GetRequiredService<ILogger<SettingsStore>>()));
-        services.AddSingleton<StationRepository>();
         services.AddSingleton(sp => new FavoritesStore(FavoritesStore.DefaultPath, sp.GetRequiredService<ILogger<FavoritesStore>>()));
         services.AddSingleton<RadioBrowserClient>();
         services.AddSingleton<LogoCache>();

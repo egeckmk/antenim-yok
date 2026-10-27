@@ -41,9 +41,6 @@ public sealed record StationStream
     public StreamType Type { get; init; } = StreamType.Icecast;
     public string? Codec { get; init; }
     public int? Bitrate { get; init; }
-
-    /// <summary>Guessed URL that has not been tried yet.</summary>
-    public bool Unverified { get; init; }
 }
 
 public enum StreamType

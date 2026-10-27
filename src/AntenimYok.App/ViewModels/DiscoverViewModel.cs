@@ -83,10 +83,10 @@ public sealed partial class DiscoverViewModel : ObservableObject
         }
     }
 
-    /// <summary>Same station as a catalog entry → reuse it, so favorites, logo and playing state stay in sync.</summary>
+    /// <summary>Same station as a favorite → reuse it, so the star, logo and playing state stay in sync.</summary>
     private StationItem ToItem(DiscoveredStation found)
     {
-        var item = _main.FindKnown(found.Station) ?? _main.GetItem(found.Station);
+        var item = _main.FindFavorite(found.Station) ?? _main.GetItem(found.Station);
         if (item.Subtitle.Length == 0)
             item.Subtitle = Describe(found);
         return item;

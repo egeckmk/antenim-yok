@@ -21,7 +21,6 @@ public sealed partial class MainViewModel : ObservableObject
 {
     private const double VolumeStep = 5;
 
-    private readonly StationRepository _catalog;
     private readonly FavoritesStore _favorites;
     private readonly RadioPlayer _player;
     private readonly SongTitleMonitor _songTitles;
@@ -34,7 +33,6 @@ public sealed partial class MainViewModel : ObservableObject
     private readonly Dictionary<string, StationItem> _items = [];
 
     public MainViewModel(
-        StationRepository catalog,
         FavoritesStore favorites,
         RadioPlayer player,
         SongTitleMonitor songTitles,
@@ -43,7 +41,6 @@ public sealed partial class MainViewModel : ObservableObject
         MediaControlsService mediaControls,
         ILogger<MainViewModel> logger)
     {
-        _catalog = catalog;
         _favorites = favorites;
         _player = player;
         _songTitles = songTitles;
@@ -93,9 +90,6 @@ public sealed partial class MainViewModel : ObservableObject
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(MuteGlyph), nameof(MuteLabel))]
     public partial bool IsMuted { get; set; }
-
-    [ObservableProperty]
-    public partial bool LoadFailed { get; private set; }
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(NoResultsText))]
@@ -148,39 +142,22 @@ public sealed partial class MainViewModel : ObservableObject
     public string MuteGlyph => Glyph(IsMuted ? 0xE74F : 0xE767); // Mute / Volume
     public string MuteLabel => IsMuted ? "Sesi aç" : "Sesi kapat";
 
-    [RelayCommand]
-    private async Task LoadAsync()
+    /// <summary>Loads the favorites (local file; empty on first run).</summary>
+    public void LoadFavorites()
     {
-        try
+        Stations.Clear();
+        foreach (var station in _favorites.Load())
         {
-            LoadFailed = false;
-            // Built-in, verified stations (data/stations.json). Not favorites by themselves: when the same station
-            // is picked in Discover, its checked stream URLs, fallbacks and logo are used instead of Radio Browser's.
-            var catalog = await _catalog.LoadEmbeddedAsync();
-            var favorites = _favorites.Load(catalog);
-
-            foreach (var station in catalog)
-                GetItem(station);
-
-            Stations.Clear();
-            foreach (var station in favorites)
-            {
-                var item = GetItem(station);
-                item.IsFavorite = true;
-                Stations.Add(item);
-                EnsureLogo(item);
-            }
-            OnFavoritesChanged();
-
-            // Show the last station in the bar (not auto-playing).
-            CurrentStation ??= Stations.FirstOrDefault(i => i.Station.Id == _settings.Current.LastStationId)?.Station;
-            OnPropertyChanged(nameof(CurrentItem));
+            var item = GetItem(station);
+            item.IsFavorite = true;
+            Stations.Add(item);
+            EnsureLogo(item);
         }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Could not load stations");
-            LoadFailed = true;
-        }
+        OnFavoritesChanged();
+
+        // Show the last station in the bar (not auto-playing).
+        CurrentStation ??= Stations.FirstOrDefault(i => i.Station.Id == _settings.Current.LastStationId)?.Station;
+        OnPropertyChanged(nameof(CurrentItem));
     }
 
     /// <summary>The shared item for a station (created on first use).</summary>
@@ -195,15 +172,14 @@ public sealed partial class MainViewModel : ObservableObject
     }
 
     /// <summary>
-    /// A catalog/favorite station that is the same as this Radio Browser hit: same Radio Browser id,
+    /// The favorite that is the same station as this Radio Browser hit: same Radio Browser id,
     /// or the same name (Radio Browser often lists one station several times under different ids).
     /// </summary>
-    public StationItem? FindKnown(Station discovered)
+    public StationItem? FindFavorite(Station discovered)
     {
         var name = StationSearch.Fold(discovered.Name);
-        var known = _items.Values.Where(i => !i.Station.Id.StartsWith("rb-", StringComparison.Ordinal)).ToList();
-        return known.FirstOrDefault(i => discovered.RadioBrowserUuid is { } uuid && i.Station.RadioBrowserUuid == uuid)
-            ?? known.FirstOrDefault(i => StationSearch.Fold(i.Station.Name) == name);
+        return Stations.FirstOrDefault(i => discovered.RadioBrowserUuid is { } uuid && i.Station.RadioBrowserUuid == uuid)
+            ?? Stations.FirstOrDefault(i => StationSearch.Fold(i.Station.Name) == name);
     }
 
     /// <summary>Starts the logo download the first time an item is shown.</summary>

@@ -7,7 +7,7 @@ Her sprint ≈ 1 akşam / 2–3 saat. Her sprint sonunda çalışan bir exe + k�
 
 ### Sprint 0 — Hazırlık & tasarım (kod yok)
 - [x] İstasyon listesi (9): Alem FM, Best FM, Show Radyo, Power FM, Metro FM, Virgin Radio Türkiye, Power Türk, Radyo Fenomen, Kafa Radyo
-- [x] Akış URL'leri bulundu → [stations.json](stations.json) v1 (9 istasyon, yedek akışlı; `unverified` olanlar Sprint 1'de denenecek; Power Türk, Fenomen, Kafa logosu yok)
+- [x] Akış URL'leri bulundu → stations.json v1 (sonradan kaldırıldı) (9 istasyon, yedek akışlı; `unverified` olanlar Sprint 1'de denenecek; Power Türk, Fenomen, Kafa logosu yok)
 - [x] Uygulamanın adı: **Antenim Yok** ✅ (repo: `antenim-yok`)
 - [x] Ana pencere + mini pencere + tepsi menüsü wireframe'i (onay) → [WIREFRAME.md](WIREFRAME.md)
 - [x] GitHub'da kişisel repo `egeckmk/antenim-yok`, solution iskeleti (App net10 paketsiz/self-contained x64 + Core + Tests)
@@ -42,7 +42,7 @@ Her sprint ≈ 1 akşam / 2–3 saat. Her sprint sonunda çalışan bir exe + k�
 ### Sprint 4 — İçerik
 - [x] Keşfet: Radio Browser API (`countrycode=TR`, arama, tür) → favorilere ekle/çıkar (645 farklı radyo; aynı adlı kayıtlar birleştirilir)
 - [x] Şimdi çalan şarkı adı (ICY metadata) — sadece ICY gönderen Icecast yayınlar (şu an Alem, Metro, Virgin); HLS'te yok. Uygulamada canlı görülmedi, elle kontrol edilecek
-- [x] ~~`stations.json`'u GitHub/Gist'ten çek~~ — vazgeçildi: favoriler yerelde ve boş başlar, liste uygulamaya gömülü kalır
+- [x] ~~`stations.json`'u GitHub/Gist'ten çek~~ — vazgeçildi: favoriler yerelde ve boş başlar, `data/stations.json` repodan kaldırıldı
 
 ### Sprint 5 — Paketleme
 - [ ] `dotnet publish` self-contained (WindowsAppSDKSelfContained), kullanıcı klasörüne kurulum, admin yok

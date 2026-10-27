@@ -46,7 +46,7 @@ public sealed partial class MainWindow : Window
         ViewModel.Stations.CollectionChanged += OnStationsChanged;
         RebuildTrayMenu();
 
-        ViewModel.LoadCommand.Execute(null);
+        ViewModel.LoadFavorites();
         NavigateTo(settings.Current.LastPage ?? "favorites");
     }
 

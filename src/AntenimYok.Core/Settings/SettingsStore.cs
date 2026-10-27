@@ -108,10 +108,7 @@ public sealed class SettingsStore
                 lock (_gate)
                     snapshot = Current;
 
-                Directory.CreateDirectory(Path.GetDirectoryName(_path)!);
-                var temp = _path + ".tmp";
-                File.WriteAllText(temp, JsonSerializer.Serialize(snapshot, JsonOptions));
-                File.Move(temp, _path, overwrite: true);
+                AtomicFile.WriteAllText(_path, JsonSerializer.Serialize(snapshot, JsonOptions));
             }
         }
         catch (Exception ex)
