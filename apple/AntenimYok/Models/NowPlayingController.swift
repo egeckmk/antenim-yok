@@ -55,9 +55,7 @@ final class NowPlayingController {
 
         guard let station = model.nowPlayingStation else {
             center.nowPlayingInfo = nil
-            #if os(macOS)
             center.playbackState = .stopped
-            #endif
             return
         }
 
@@ -66,6 +64,9 @@ final class NowPlayingController {
         var info: [String: Any] = [
             MPMediaItemPropertyTitle: text.title,
             MPNowPlayingInfoPropertyIsLiveStream: true,
+            // Without a rate the system treats the app as paused, so the lock screen / Control Center hide the card.
+            MPNowPlayingInfoPropertyPlaybackRate: player.isActive ? 1.0 : 0.0,
+            MPNowPlayingInfoPropertyDefaultPlaybackRate: 1.0,
             MPNowPlayingInfoPropertyMediaType: MPNowPlayingInfoMediaType.audio.rawValue,
         ]
         if let subtitle = text.subtitle {
@@ -76,9 +77,7 @@ final class NowPlayingController {
             info[MPMediaItemPropertyArtwork] = artwork
         }
         center.nowPlayingInfo = info
-        #if os(macOS)
         center.playbackState = player.isActive ? .playing : .paused
-        #endif
     }
 
     private func loadArtwork(for station: Station) {

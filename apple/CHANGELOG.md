@@ -12,6 +12,7 @@ Biçim [Keep a Changelog](https://keepachangelog.com/tr-TR/1.1.0/), sürümleme 
   yeni "Oynatma" menüsü (ilk 9 favori adıyla) ve Ayarlar'da kısayol listesi.
 
 ### Düzeltildi
+- iPhone'da kilit ekranında ve Denetim Merkezi'nde "Şimdi Çalıyor" kartının görünmemesi (sistem uygulamayı duraklatılmış sayıyordu).
 - Mac'te arama kutusuna boşluk veya "m" yazınca çalma durması / sessize alınması.
 
 ## [0.1.0] - 2026-10-28

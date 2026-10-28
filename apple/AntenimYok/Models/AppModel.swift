@@ -54,6 +54,14 @@ final class AppModel {
 
         network.start { [weak player] in player?.notifyNetworkAvailable() }
         nowPlaying = NowPlayingController(model: self)
+        #if DEBUG
+        if ProcessInfo.processInfo.arguments.contains("-autoplayFirstDiscover") {
+            Task {
+                await discover.ensureLoaded()
+                if let first = discover.results.first { play(first.station) }
+            }
+        }
+        #endif
     }
 
     // MARK: - Now playing
