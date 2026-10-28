@@ -91,7 +91,7 @@ Her sprint ≈ 1 akşam / 2–3 saat. Her sprint sonunda çalışan bir exe + k�
 > yalnızca Türkçe, ilk mağaza sürümü 1.0.0, LICENSE'a App Store istisnası. Windows'ta Store yok, GitHub Releases sürer.
 
 #### S alt sprintleri (geliştirici ajan yazar, test ajanı doğrular)
-- [ ] **S1 Mağaza hazırlığı (kod):** `PrivacyInfo.xcprivacy` (gerekçeli API'ler), `ITSAppUsesNonExemptEncryption=NO`, ATS'yi
+- [x] **S1 Mağaza hazırlığı (kod):** `PrivacyInfo.xcprivacy` (gerekçeli API'ler), `ITSAppUsesNonExemptEncryption=NO`, ATS'yi
       daralt (mümkünse yalnızca medya/gereken yerler; değilse inceleme notu için gerekçe), Mac'te hardened runtime + sandbox
       yetkilerini gözden geçir (yalnızca gereken), derleme numarası (`CURRENT_PROJECT_VERSION`) her arşivde artar,
       Ayarlar → Hakkında'da gizlilik politikası + destek bağlantıları; simge yeri: `AppIcon.icon` (Icon Composer) projeye bağlı,

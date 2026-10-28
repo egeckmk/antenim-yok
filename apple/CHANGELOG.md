@@ -6,6 +6,9 @@ Biçim [Keep a Changelog](https://keepachangelog.com/tr-TR/1.1.0/), sürümleme 
 
 ## [Yayınlanmadı]
 
+### Eklendi
+- Ayarlar → Hakkında: gizlilik politikası ve destek bağlantıları.
+
 ## [0.2.0] - 2026-10-28
 
 ### Eklendi

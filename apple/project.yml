@@ -35,7 +35,9 @@ targets:
         UILaunchScreen: {}
         UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait, UIInterfaceOrientationLandscapeLeft, UIInterfaceOrientationLandscapeRight]
         UISupportedInterfaceOrientations~ipad: [UIInterfaceOrientationPortrait, UIInterfaceOrientationPortraitUpsideDown, UIInterfaceOrientationLandscapeLeft, UIInterfaceOrientationLandscapeRight]
-        # Many Turkish stations only serve plain http streams and http logos.
+        ITSAppUsesNonExemptEncryption: false
+        # Many Turkish stations serve plain http: radio streams, .pls/.m3u playlists, ICY titles and logos.
+        # NSAllowsArbitraryLoadsForMedia alone is not enough (URLSession fetches of http playlists fail with -1022).
         NSAppTransportSecurity:
           NSAllowsArbitraryLoads: true
     entitlements:
@@ -49,6 +51,7 @@ targets:
         PRODUCT_NAME: AntenimYok
         INFOPLIST_KEY_CFBundleDisplayName: Antenim Yok
         ENABLE_PREVIEWS: YES
+        ENABLE_HARDENED_RUNTIME: YES
         CODE_SIGN_STYLE: Automatic
         SWIFT_STRICT_CONCURRENCY: complete
         SDKROOT: auto

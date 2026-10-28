@@ -52,6 +52,8 @@ struct SettingsView: View {
             Section("Hakkında") {
                 LabeledContent("Sürüm", value: Self.version)
                 LabeledContent("Lisans", value: "GPL-3.0")
+                Link("Gizlilik politikası", destination: Self.privacyURL)
+                Link("Destek", destination: Self.supportURL)
                 Text("Reklamsız radyo. Favorileriniz yalnızca bu cihazda saklanır.")
                     .foregroundStyle(.secondary)
             }
@@ -59,6 +61,9 @@ struct SettingsView: View {
         .formStyle(.grouped)
         .navigationTitle("Ayarlar")
     }
+
+    private static let privacyURL = URL(string: "https://github.com/egeckmk/antenim-yok/blob/main/docs/privacy.md")!
+    private static let supportURL = URL(string: "https://github.com/egeckmk/antenim-yok/issues")!
 
     private static var version: String {
         let info = Bundle.main.infoDictionary
