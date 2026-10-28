@@ -52,7 +52,8 @@ Her sprint ≈ 1 akşam / 2–3 saat. Her sprint sonunda çalışan bir exe + k�
 - [x] README (ekran görüntüleri, kurulum, SSS), GPL-3.0, repo public, 1.0.0 GitHub Release (uygulama "Güncel" görüyor; ilk gerçek güncelleme 1.0.1 ile denenecek)
 
 ### Sonra — Apple (SwiftUI Multiplatform)
-- [ ] A1 çalan MVP (AVPlayer, arka plan ses) · A2 kilit ekranı/AirPods + Mac menü çubuğu · A3 tasarım + widget · A4 Siri/Kestirmeler, iCloud favoriler
+- [x] A1 çalan MVP (AVPlayer, arka plan ses)
+- [ ] A2 kilit ekranı/AirPods + Mac menü çubuğu · A3 tasarım + widget · A4 Siri/Kestirmeler, iCloud favoriler
 
 #### A1 alt sprintleri (geliştirici ajan yazar, test ajanı doğrular)
 - [x] **A1.1 İskelet:** `apple/project.yml` (xcodegen) → `AntenimYok.xcodeproj`; tek multiplatform hedef (iOS 18+ / macOS 15+),
@@ -66,5 +67,5 @@ Her sprint ≈ 1 akşam / 2–3 saat. Her sprint sonunda çalışan bir exe + k�
       arka plan, ICY şarkı adı
 - [x] **A1.5 Arayüz:** Favoriler / Keşfet / Ayarlar (Mac: `NavigationSplitView`, iPhone: `TabView`), arama, tür süzgeci,
       favoriye ekle/çıkar, Şimdi Çalıyor çubuğu (çal/durdur, ses, şarkı adı), logolar, açık/koyu, VoiceOver adları — `native-app-ui`
-- [ ] **A1.6 Kapanış:** iki platformda derleme + tüm testler yeşil, gerçek istasyonla elle çalma denemesi (Mac), CHANGELOG 0.1.0,
+- [x] **A1.6 Kapanış:** iki platformda derleme + tüm testler yeşil, gerçek istasyonla elle çalma denemesi (Mac), CHANGELOG 0.1.0,
       A1'i işaretle, `docs/NEXT.md` sil
