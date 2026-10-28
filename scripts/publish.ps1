@@ -43,7 +43,9 @@ try {
     & dotnet publish src\AntenimYok.App\AntenimYok.App.csproj -c Release -r win-x64 -p:Platform=x64 -o $publishDir --nologo -v quiet
     if ($LASTEXITCODE -ne 0) { throw "dotnet publish failed ($LASTEXITCODE)." }
 
-    # Previous release from GitHub so vpk can build a small delta update (skipped if none / repo not reachable).
+    # Start from what is on GitHub only: stale local packages (never published) would end up in the update feed
+    # and make the upload fail. The previous release is downloaded so vpk can build a small delta update.
+    if (Test-Path $releasesDir) { Remove-Item $releasesDir -Recurse -Force }
     New-Item -ItemType Directory -Force $releasesDir | Out-Null
     $downloadArgs = @('vpk', 'download', 'github', '--repoUrl', $repoUrl, '-o', $releasesDir)
     if ($env:GITHUB_TOKEN) { $downloadArgs += @('--token', $env:GITHUB_TOKEN) }
