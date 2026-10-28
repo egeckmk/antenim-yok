@@ -85,6 +85,9 @@ final class NowPlayingController {
         artworkStationId = station.id
         artwork = nil
         artworkTask?.cancel()
+        // No logo, or it cannot be loaded: initials on a neutral tile (like the in-app placeholder).
+        let initials = station.initials
+        artwork = Self.makeInitialsArtwork(initials)
         guard let logo = station.logo, let url = URL(string: logo) else { return }
         artworkTask = Task { [weak self] in
             guard let (data, _) = try? await URLSession.shared.data(from: url),
@@ -110,12 +113,61 @@ final class NowPlayingController {
             (center.previousTrackCommand, .previous),
         ]
         for (command, action) in commands {
+            command.isEnabled = true
             command.addTarget { _ in
                 send(action)
                 return .success
             }
         }
+        // A live stream has no timeline: make sure no seek/skip controls are inferred.
+        for command in [center.skipForwardCommand, center.skipBackwardCommand, center.seekForwardCommand,
+                        center.seekBackwardCommand, center.changePlaybackPositionCommand,
+                        center.changePlaybackRateCommand] {
+            command.isEnabled = false
+        }
     }
+
+    private nonisolated static func makeInitialsArtwork(_ initials: String) -> MPMediaItemArtwork {
+        let size = CGSize(width: 512, height: 512)
+        return MPMediaItemArtwork(boundsSize: size) { requested in
+            let side = max(requested.width, 1)
+            let rect = CGRect(x: 0, y: 0, width: side, height: side)
+            #if os(macOS)
+            return NSImage(size: rect.size, flipped: false) { rect in
+                NSColor.systemGray.setFill()
+                rect.fill()
+                drawInitials(initials, in: rect, color: NSColor.windowBackgroundColor)
+                return true
+            }
+            #else
+            return UIGraphicsImageRenderer(size: rect.size).image { _ in
+                UIColor.systemGray.setFill()
+                UIRectFill(rect)
+                drawInitials(initials, in: rect, color: UIColor.systemBackground)
+            }
+            #endif
+        }
+    }
+
+    #if os(macOS)
+    private nonisolated static func drawInitials(_ text: String, in rect: CGRect, color: NSColor) {
+        let attributes: [NSAttributedString.Key: Any] = [
+            .font: NSFont.systemFont(ofSize: rect.height * 0.4, weight: .semibold), .foregroundColor: color,
+        ]
+        let string = NSAttributedString(string: text, attributes: attributes)
+        let size = string.size()
+        string.draw(at: CGPoint(x: rect.midX - size.width / 2, y: rect.midY - size.height / 2))
+    }
+    #else
+    private nonisolated static func drawInitials(_ text: String, in rect: CGRect, color: UIColor) {
+        let attributes: [NSAttributedString.Key: Any] = [
+            .font: UIFont.systemFont(ofSize: rect.height * 0.4, weight: .semibold), .foregroundColor: color,
+        ]
+        let string = NSAttributedString(string: text, attributes: attributes)
+        let size = string.size()
+        string.draw(at: CGPoint(x: rect.midX - size.width / 2, y: rect.midY - size.height / 2))
+    }
+    #endif
 
     private nonisolated static func makeArtwork(_ data: Data) -> MPMediaItemArtwork? {
         #if os(macOS)

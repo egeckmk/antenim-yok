@@ -55,6 +55,11 @@ final class AppModel {
         network.start { [weak player] in player?.notifyNetworkAvailable() }
         nowPlaying = NowPlayingController(model: self)
         #if DEBUG
+        let args = ProcessInfo.processInfo.arguments
+        if let flag = args.firstIndex(of: "-autoplayFavorite"), args.indices.contains(flag + 1),
+           let index = Int(args[flag + 1]) {
+            playFavorite(at: index)
+        }
         if ProcessInfo.processInfo.arguments.contains("-autoplayFirstDiscover") {
             Task {
                 await discover.ensureLoaded()
