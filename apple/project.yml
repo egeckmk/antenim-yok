@@ -10,7 +10,6 @@ settings:
     SWIFT_VERSION: "6.0"
     MARKETING_VERSION: "0.1.0"
     CURRENT_PROJECT_VERSION: "1"
-    DEVELOPMENT_TEAM: ""
 packages:
   AntenimYokCore:
     path: AntenimYokCore
@@ -18,6 +17,9 @@ targets:
   AntenimYok:
     type: application
     supportedDestinations: [iOS, macOS]
+    configFiles:
+      Debug: Config/Signing.xcconfig
+      Release: Config/Signing.xcconfig
     sources:
       - AntenimYok
     dependencies:

@@ -100,3 +100,7 @@ kodu kullanabilir, değiştirebilir ve dağıtabilirsin; değiştirilmiş sürü
 ---
 
 Yayınlar ve logolar ilgili radyo istasyonlarına aittir; Antenim Yok yalnızca herkese açık internet yayınlarını çalar ve ticari değildir.
+
+## Apple (iPhone + Mac) — ilk kurulum
+`apple/` altında: `brew install xcodegen`, `cp Config/Local.xcconfig.example Config/Local.xcconfig` ve dosyaya kendi Apple Team ID'ni yaz
+(`DEVELOPMENT_TEAM = XXXXXXXXXX`; dosya git'e girmez), sonra `xcodegen generate` ve `AntenimYok.xcodeproj`'i aç.

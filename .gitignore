@@ -40,3 +40,4 @@ apple/AntenimYok/Resources/Info.plist
 .swiftpm/
 *.xcworkspace/xcuserdata/
 apple/AntenimYok/Resources/AntenimYok.entitlements
+apple/Config/Local.xcconfig
