@@ -24,6 +24,7 @@ Windows (WinUI, `src/`) ve Apple (SwiftUI — iPhone + Mac, `apple/`) **ayrı ko
   (ör. Radio Browser'daki bir sorun) her iki CHANGELOG'a ayrı ayrı yazılır, her platform kendi sırasında yayınlar.
 - Numaraları eşitlemeye çalışma; Windows 1.4.2 iken Apple 0.3.0 olabilir.
 - Eski şema: `v0.1.0`–`v1.0.0` tag'leri Windows'a aittir (platform öneki gelmeden önce). Dokunma; yenileri `win-v…`.
+  Windows 1.0.0 ayrıca `win-v1.0.0` olarak etiketli; GitHub Release'i o tag'e bağlıdır.
 
 ## Sürüm numarası nerede görünür
 - Uygulama sürümü derlemeden okur, koda sabit yazılmaz. Windows: `AssemblyInformationalVersionAttribute`

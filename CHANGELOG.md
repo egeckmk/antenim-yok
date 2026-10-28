@@ -72,8 +72,8 @@ Biçim [Keep a Changelog](https://keepachangelog.com/tr-TR/1.1.0/), sürümleme 
 - Bağlanıyor / çalıyor / "yayına ulaşılamadı" durumları.
 - `.pls` / `.m3u` çalma listelerini çözme.
 
-[Yayınlanmadı]: https://github.com/egeckmk/antenim-yok/compare/v1.0.0...HEAD
-[1.0.0]: https://github.com/egeckmk/antenim-yok/compare/v0.4.0...v1.0.0
+[Yayınlanmadı]: https://github.com/egeckmk/antenim-yok/compare/win-v1.0.0...HEAD
+[1.0.0]: https://github.com/egeckmk/antenim-yok/compare/v0.4.0...win-v1.0.0
 [0.4.0]: https://github.com/egeckmk/antenim-yok/compare/v0.3.1...v0.4.0
 [0.3.1]: https://github.com/egeckmk/antenim-yok/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/egeckmk/antenim-yok/compare/v0.2.0...v0.3.0
