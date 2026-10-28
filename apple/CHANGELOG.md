@@ -6,6 +6,8 @@ Biçim [Keep a Changelog](https://keepachangelog.com/tr-TR/1.1.0/), sürümleme 
 
 ## [Yayınlanmadı]
 
+## [0.2.0] - 2026-10-28
+
 ### Eklendi
 - iPhone: kulaklık / AirPods / araç sesi çıkarılınca çalma durur (hoparlörden devam etmez); arama ya da başka uygulama kesintisinden sonra, sistem izin verirse çalma kendiliğinden sürer.
 - Mac: Ayarlar'da "Oturum açılınca başlat"; açılışta pencere açılmadan menü çubuğunda başlar.
@@ -31,3 +33,7 @@ Biçim [Keep a Changelog](https://keepachangelog.com/tr-TR/1.1.0/), sürümleme 
 - Yayın açılmazsa istasyonun sıradaki akışı denenir; bağlantı kopunca artan beklemeyle (en çok ~5 dk) yeniden bağlanır, ağ gelince hemen dener.
 - iPhone'da arka planda ve ekran kapalıyken çalma.
 - Ayarlar: tema (Sistem / Açık / Koyu), şarkı adlarını gösterme.
+
+[Yayınlanmadı]: https://github.com/egeckmk/antenim-yok/compare/mac-v0.2.0...HEAD
+[0.2.0]: https://github.com/egeckmk/antenim-yok/releases/tag/mac-v0.2.0
+[0.1.0]: https://github.com/egeckmk/antenim-yok/commit/a03719c

@@ -41,3 +41,4 @@ apple/AntenimYok/Resources/Info.plist
 *.xcworkspace/xcuserdata/
 apple/AntenimYok/Resources/AntenimYok.entitlements
 apple/Config/Local.xcconfig
+apple/build/

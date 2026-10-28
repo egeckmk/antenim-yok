@@ -53,7 +53,8 @@ Her sprint ≈ 1 akşam / 2–3 saat. Her sprint sonunda çalışan bir exe + k�
 
 ### Sonra — Apple (SwiftUI Multiplatform)
 - [x] A1 çalan MVP (AVPlayer, arka plan ses)
-- [ ] A2 kilit ekranı/AirPods + Mac menü çubuğu · A3 tasarım + widget · A4 Siri/Kestirmeler, iCloud favoriler
+- [x] A2 kilit ekranı/AirPods + Mac menü çubuğu
+- [ ] A3 tasarım + widget · A4 Siri/Kestirmeler, iCloud favoriler
 
 #### A2 alt sprintleri (geliştirici ajan yazar, test ajanı doğrular)
 - [x] **A2.0 Şimdi Çalıyor + Mac kısayolları** (önceden yapıldı): Denetim Merkezi / medya tuşları / kilit ekranı kartı,
@@ -66,7 +67,7 @@ Her sprint ≈ 1 akşam / 2–3 saat. Her sprint sonunda çalışan bir exe + k�
 - [x] **A2.3 Mac oturum açılışında başlat:** Ayarlar'da anahtar (`SMAppService.mainApp`); açılışta pencere açmadan menü çubuğunda başlar
 - [x] **A2.4 iPhone ses yolu:** kulaklık/AirPods çıkınca çalma durur (route change), telefon/kesinti sonrası devam;
       kilit ekranı kartında kontrol düğmeleri (simülatörde görünmedi — gerçek cihazda Ege dener)
-- [ ] **A2.5 Kapanış + 0.2.0:** iki platformda derleme + tüm testler yeşil, CHANGELOG, A2'yi işaretle; `MARKETING_VERSION` 0.2.0,
+- [x] **A2.5 Kapanış + 0.2.0:** iki platformda derleme + tüm testler yeşil, CHANGELOG, A2'yi işaretle; `MARKETING_VERSION` 0.2.0,
       `Release Apple 0.2.0` commit'i, yerel `mac-v0.2.0` tag'i, Mac `.app` zip'i (`apple/build/`, repoya girmez).
       **Push ve GitHub Release yok** — Ege test edip onaylayınca
 
