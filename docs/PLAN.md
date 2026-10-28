@@ -85,3 +85,24 @@ Her sprint ≈ 1 akşam / 2–3 saat. Her sprint sonunda çalışan bir exe + k�
       favoriye ekle/çıkar, Şimdi Çalıyor çubuğu (çal/durdur, ses, şarkı adı), logolar, açık/koyu, VoiceOver adları — `native-app-ui`
 - [x] **A1.6 Kapanış:** iki platformda derleme + tüm testler yeşil, gerçek istasyonla elle çalma denemesi (Mac), CHANGELOG 0.1.0,
       A1'i işaretle, `docs/NEXT.md` sil
+
+### Apple — App Store (iPhone + Mac, 1.0.0)
+> Karar (Ege, 2026-10-28): Apple uygulaması App Store'a çıkar (iOS + macOS, tek kayıt / universal purchase), mağaza sayfası
+> yalnızca Türkçe, ilk mağaza sürümü 1.0.0, LICENSE'a App Store istisnası. Windows'ta Store yok, GitHub Releases sürer.
+
+#### S alt sprintleri (geliştirici ajan yazar, test ajanı doğrular)
+- [ ] **S1 Mağaza hazırlığı (kod):** `PrivacyInfo.xcprivacy` (gerekçeli API'ler), `ITSAppUsesNonExemptEncryption=NO`, ATS'yi
+      daralt (mümkünse yalnızca medya/gereken yerler; değilse inceleme notu için gerekçe), Mac'te hardened runtime + sandbox
+      yetkilerini gözden geçir (yalnızca gereken), derleme numarası (`CURRENT_PROJECT_VERSION`) her arşivde artar,
+      Ayarlar → Hakkında'da gizlilik politikası + destek bağlantıları; simge yeri: `AppIcon.icon` (Icon Composer) projeye bağlı,
+      dosya yokken de derlenir
+- [ ] **S2 Simge katmanları:** özgün SVG katmanları (`apple/Design/AppIcon/`; SF Symbols kullanılamaz — lisans) →
+      Ege Icon Composer'da `AppIcon.icon` yapar
+- [ ] **S3 Lisans + belgeler:** LICENSE'a GPL-3.0 §7 App Store ek izni, `docs/privacy.md` (Türkçe gizlilik politikası),
+      README, `CLAUDE.md` (Store kararı), versioning skill (Apple: App Store, derleme numarası)
+- [ ] **S4 Mağaza içeriği:** `apple/AppStore/tr/` (ad, alt başlık, açıklama, anahtar kelimeler, promosyon metni, yenilikler,
+      inceleme notu — 5.2.3 için Radio Browser açıklaması, App Privacy = "Veri toplanmıyor", yaş derecesi, kategori Müzik);
+      ekran görüntüleri: iPhone 6.9" + Mac, açık/koyu, DEBUG demo modu ile otomatik
+- [ ] **S5 Arşiv + 1.0.0:** `apple/scripts/archive.sh` (iOS + macOS arşivi, App Store Connect için dışa aktarma),
+      `MARKETING_VERSION` 1.0.0, CHANGELOG `[1.0.0]`, `Release Apple 1.0.0`, yerel `mac-v1.0.0` tag'i. **Yükleme, push, inceleme
+      gönderimi yok** — bunları Ege yapar (Xcode Organizer / App Store Connect)
