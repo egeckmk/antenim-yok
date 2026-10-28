@@ -60,7 +60,7 @@ Her sprint ≈ 1 akşam / 2–3 saat. Her sprint sonunda çalışan bir exe + k�
       mantık yerel Swift paketi `apple/AntenimYokCore` (UI'sız, `swift test` ile test edilir); `apple/CHANGELOG.md`, `.gitignore`
 - [x] **A1.2 Model + depolama:** `Station` (Windows `favorites.json` ile aynı JSON), `FavoritesStore` (boş başlar, Application Support,
       atomik yazma), `SettingsStore` (son istasyon, ses), `.pls/.m3u` çözümleme
-- [ ] **A1.3 Keşfet verisi:** `RadioBrowserClient` (`countrycode=TR`, arama, tür), tür grupları, aynı adlı kayıtları birleştirme, istasyon arama
+- [x] **A1.3 Keşfet verisi:** `RadioBrowserClient` (`countrycode=TR`, arama, tür), tür grupları, aynı adlı kayıtları birleştirme, istasyon arama
 - [ ] **A1.4 Çalma motoru:** `RadioPlayer` (`AVPlayer` soyutlamasıyla test edilebilir): durumlar (bağlanıyor/çalıyor/hata), ~10 sn'de
       açılmazsa sıradaki akış, yeniden bağlanma (artan bekleme ≤5 dk, ağ gelince hemen, 15 sn takılma = kopma), iOS `AVAudioSession`
       arka plan, ICY şarkı adı
