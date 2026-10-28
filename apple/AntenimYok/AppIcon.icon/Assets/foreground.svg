@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <!-- Antenna with broadcast waves; the right-hand waves are broken: "antenim yok" (no antenna / no ads).
+       Everything lives inside the 824 x 824 safe area (100 px margin). -->
+  <g fill="none" stroke="#FFFFFF" stroke-width="44" stroke-linecap="round" stroke-linejoin="round">
+    <!-- mast -->
+    <path d="M512 428 V812"/>
+    <!-- legs -->
+    <path d="M512 640 L400 812"/>
+    <path d="M512 640 L624 812"/>
+    <!-- left waves (intact) -->
+    <path d="M384 300 A180 180 0 0 0 384 556"/>
+    <path d="M298 228 A290 290 0 0 0 298 628"/>
+    <!-- right waves (broken into pieces) -->
+    <path d="M640 300 A180 180 0 0 1 664 344"/>
+    <path d="M686 408 A180 180 0 0 1 640 556" stroke-dasharray="1 0" opacity="0.55"/>
+    <path d="M726 228 A290 290 0 0 1 756 276" opacity="0.55"/>
+    <path d="M782 352 A290 290 0 0 1 726 628" opacity="0.55" stroke-dasharray="1 0"/>
+  </g>
+  <!-- tip -->
+  <circle cx="512" cy="372" r="52" fill="#FFFFFF"/>
+</svg>

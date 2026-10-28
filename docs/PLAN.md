@@ -96,7 +96,7 @@ Her sprint ≈ 1 akşam / 2–3 saat. Her sprint sonunda çalışan bir exe + k�
       yetkilerini gözden geçir (yalnızca gereken), derleme numarası (`CURRENT_PROJECT_VERSION`) her arşivde artar,
       Ayarlar → Hakkında'da gizlilik politikası + destek bağlantıları; simge yeri: `AppIcon.icon` (Icon Composer) projeye bağlı,
       dosya yokken de derlenir
-- [ ] **S2 Simge katmanları:** özgün SVG katmanları (`apple/Design/AppIcon/`; SF Symbols kullanılamaz — lisans) →
+- [x] **S2 Simge katmanları:** özgün SVG katmanları (`apple/Design/AppIcon/`; SF Symbols kullanılamaz — lisans) →
       Ege Icon Composer'da `AppIcon.icon` yapar
 - [ ] **S3 Lisans + belgeler:** LICENSE'a GPL-3.0 §7 App Store ek izni, `docs/privacy.md` (Türkçe gizlilik politikası),
       README, `CLAUDE.md` (Store kararı), versioning skill (Apple: App Store, derleme numarası)
