@@ -54,6 +54,9 @@ final class AppModel {
 
         network.start { [weak player] in player?.notifyNetworkAvailable() }
         nowPlaying = NowPlayingController(model: self)
+        #if os(macOS)
+        AppDelegate.keepPlayingInMenuBar = { [unowned self] in self.keepPlayingInMenuBar }
+        #endif
         #if DEBUG
         let args = ProcessInfo.processInfo.arguments
         if let flag = args.firstIndex(of: "-autoplayFavorite"), args.indices.contains(flag + 1),
@@ -184,6 +187,32 @@ final class AppModel {
             songs.isEnabled = newValue
             settingsStore.update { $0.showSongTitles = newValue }
         }
+    }
+
+    var keepPlayingInMenuBar: Bool {
+        get { settings.keepPlayingInMenuBar }
+        set {
+            settings.keepPlayingInMenuBar = newValue
+            settingsStore.update { $0.keepPlayingInMenuBar = newValue }
+        }
+    }
+
+    var miniPlayerPosition: WindowPosition? {
+        settings.miniPlayerPosition
+    }
+
+    func saveMiniPlayerPosition(_ position: WindowPosition) {
+        settings.miniPlayerPosition = position
+        settingsStore.update { $0.miniPlayerPosition = position }
+    }
+
+    /// Entries of the Mac menu bar menu.
+    var menuBarItems: [MenuBarItem] {
+        MenuBarMenu.items(
+            favorites: favorites,
+            playingStationId: player.currentStation?.id,
+            isActive: player.isActive,
+            hasStationToPlay: nowPlayingStation != nil)
     }
 
     func flushSettings() {

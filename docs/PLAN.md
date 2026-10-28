@@ -58,7 +58,7 @@ Her sprint ≈ 1 akşam / 2–3 saat. Her sprint sonunda çalışan bir exe + k�
 #### A2 alt sprintleri (geliştirici ajan yazar, test ajanı doğrular)
 - [x] **A2.0 Şimdi Çalıyor + Mac kısayolları** (önceden yapıldı): Denetim Merkezi / medya tuşları / kilit ekranı kartı,
       sonraki/önceki favori, baş harfli yedek kapak; Boşluk, ⌘1…9, ⌘F, ⌘↑/↓, M, Oynatma menüsü
-- [ ] **A2.1 Mac menü çubuğu:** `MenuBarExtra` (Windows tepsi menüsü gibi): favoriler (çalan işaretli, tıkla = çal),
+- [x] **A2.1 Mac menü çubuğu:** `MenuBarExtra` (Windows tepsi menüsü gibi): favoriler (çalan işaretli, tıkla = çal),
       Çal/Durdur, Pencereyi göster, Çıkış. Pencere kapanınca çalma sürer (Ayarlar: "Kapatınca menü çubuğunda çalmaya devam et",
       varsayılan açık); kapalıysa son pencere kapanınca uygulama çıkar
 - [ ] **A2.2 Mac mini pencere:** küçük, her zaman üstte, yeniden boyutlanmaz; logo + ad, ⏮ ⏹ ⏭ (komşu favori), ses,

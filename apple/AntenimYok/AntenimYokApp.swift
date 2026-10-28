@@ -5,18 +5,19 @@ import SwiftUI
 struct AntenimYokApp: App {
     @State private var model = AppModel()
     @Environment(\.scenePhase) private var scenePhase
+    #if os(macOS)
+    @NSApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
+    #endif
 
     var body: some Scene {
-        WindowGroup {
+        #if os(macOS)
+        Window("Antenim Yok", id: MacWindow.main) {
             RootView()
                 .environment(model)
                 .preferredColorScheme(model.theme.colorScheme)
-                #if os(macOS)
                 .frame(minWidth: 520, minHeight: 420)
                 .modifier(PlaybackKeys(model: model))
-                #endif
         }
-        #if os(macOS)
         .defaultSize(width: 880, height: 620)
         .commands {
             CommandGroup(after: .textEditing) {
@@ -27,10 +28,23 @@ struct AntenimYokApp: App {
                 PlaybackCommands(model: model)
             }
         }
-        #endif
         .onChange(of: scenePhase) { _, phase in
             if phase != .active { model.flushSettings() }
         }
+
+        MenuBarExtra("Antenim Yok", systemImage: model.menuBarSymbol) {
+            MenuBarContent(model: model)
+        }
+        #else
+        WindowGroup {
+            RootView()
+                .environment(model)
+                .preferredColorScheme(model.theme.colorScheme)
+        }
+        .onChange(of: scenePhase) { _, phase in
+            if phase != .active { model.flushSettings() }
+        }
+        #endif
     }
 }
 

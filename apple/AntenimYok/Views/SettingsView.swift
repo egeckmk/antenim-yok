@@ -22,6 +22,13 @@ struct SettingsView: View {
                 Text("Destekleyen istasyonlarda çalan şarkı adı gösterilir. Açıkken yayına ikinci bir bağlantı açılır.")
             }
             #if os(macOS)
+            Section {
+                Toggle("Kapatınca menü çubuğunda çalmaya devam et", isOn: $model.keepPlayingInMenuBar)
+            } header: {
+                Text("Pencere")
+            } footer: {
+                Text("Kapalıyken son pencereyi kapatmak uygulamayı da kapatır.")
+            }
             Section("Klavye kısayolları") {
                 LabeledContent("Çal / durdur", value: "Boşluk")
                 LabeledContent("1.–9. favoriyi çal", value: "⌘1 … ⌘9")
