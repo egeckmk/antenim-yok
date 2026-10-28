@@ -1,0 +1,38 @@
+Antenim Yok, Türkiye'deki radyoları sade bir arayüzle dinlemek için yapıldı. Uygulamada reklam, hesap, takip yok; veri toplanmaz. Sadece radyo.
+
+Not: Radyoların kendi yayınlarındaki reklamlar yayının parçasıdır; uygulama onları değiştirmez.
+
+FAVORİLER
+Sevdiğin radyoları logolarıyla bir ızgarada topla. Karta dokun, çalsın; tekrar dokun, dursun. Favorilerin yalnızca cihazında saklanır.
+
+KEŞFET
+Türkiye'den yüzlerce radyoyu ada göre ara, türe göre süz: Pop, Rock, Türkü / Halk, Türk Sanat, Arabesk, Nostalji, Caz, Klasik, Elektronik, Haber / Konuşma, Dini. Beğendiğini yıldızla favorilere ekle.
+
+KESİNTİSİZ DİNLEME
+• Bir yayın açılmazsa radyonun yedek yayınına otomatik geçer.
+• Bağlantı koparsa kendi kendine yeniden bağlanır; internet geri gelince hemen devam eder.
+• Uygulamayı kapatsan da ses çalmaya devam eder (iPhone'da arka planda ve ekran kapalıyken).
+
+ŞARKI ADI
+Destekleyen radyolarda o an çalan şarkının adı alt çubukta, kilit ekranında ve Denetim Merkezi'nde görünür. İstersen Ayarlar'dan kapatabilirsin.
+
+iPhone
+• Kilit ekranı ve Denetim Merkezi'nde Şimdi Çalıyor kartı.
+• AirPods ve kulaklık kontrolleri: çal/durdur, sonraki/önceki favori.
+• Kulaklığı çıkarınca çalma durur; sesin birden hoparlörden yükselmez.
+• Açık ve koyu tema.
+
+MAC
+• Menü çubuğu simgesi: favorilerin bir tıkla çalar, pencere kapalıyken bile.
+• Her zaman üstte duran küçük mini oynatıcı.
+• Klavye medya tuşları ve Denetim Merkezi kartı.
+• Kısayollar: Boşluk çal/durdur, ⌘1…⌘9 favoriler, ⌘F ara, ⌘↑/⌘↓ ses, M sessiz.
+• İstersen oturum açılınca menü çubuğunda başlasın.
+
+GİZLİLİK
+Antenim Yok seninle ilgili hiçbir veri toplamaz. Favorilerin ve ayarların yalnızca cihazında durur. Radyo listesi Radio Browser (radio-browser.info) topluluk dizininden alınır; radyoları çalmak için ilgili radyonun yayın sunucusuna bağlanılır.
+
+AÇIK KAYNAK
+Antenim Yok özgür yazılımdır (GPL-3.0). Kaynak kodu GitHub'da: github.com/egeckmk/antenim-yok
+
+Radyo yayınları ve logolar ilgili radyo kuruluşlarına aittir. Antenim Yok, bu kuruluşlarla bağlantılı değildir; yalnızca herkese açık internet yayınlarını çalar.

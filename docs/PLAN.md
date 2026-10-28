@@ -100,7 +100,7 @@ Her sprint ≈ 1 akşam / 2–3 saat. Her sprint sonunda çalışan bir exe + k�
       Ege Icon Composer'da `AppIcon.icon` yapar
 - [x] **S3 Lisans + belgeler:** LICENSE'a GPL-3.0 §7 App Store ek izni, `docs/privacy.md` (Türkçe gizlilik politikası),
       README, `CLAUDE.md` (Store kararı), versioning skill (Apple: App Store, derleme numarası)
-- [ ] **S4 Mağaza içeriği:** `apple/AppStore/tr/` (ad, alt başlık, açıklama, anahtar kelimeler, promosyon metni, yenilikler,
+- [x] **S4 Mağaza içeriği:** `apple/AppStore/tr/` (ad, alt başlık, açıklama, anahtar kelimeler, promosyon metni, yenilikler,
       inceleme notu — 5.2.3 için Radio Browser açıklaması, App Privacy = "Veri toplanmıyor", yaş derecesi, kategori Müzik);
       ekran görüntüleri: iPhone 6.9" + Mac, açık/koyu, DEBUG demo modu ile otomatik
 - [ ] **S5 Arşiv + 1.0.0:** `apple/scripts/archive.sh` (iOS + macOS arşivi, App Store Connect için dışa aktarma),

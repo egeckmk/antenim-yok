@@ -29,9 +29,18 @@ final class AppModel {
     @ObservationIgnored private var nowPlaying: NowPlayingController?
 
     init() {
-        let favoritesStore = FavoritesStore()
+        var favoritesStore = FavoritesStore()
+        var settingsStore = SettingsStore()
+        #if DEBUG
+        // Demo mode (App Store screenshots): throw-away stores, the user's own data stays untouched.
+        let demo = DemoMode(arguments: ProcessInfo.processInfo.arguments)
+        if let demo {
+            favoritesStore = FavoritesStore(url: demo.directory.appendingPathComponent("favorites.json"))
+            settingsStore = SettingsStore(url: demo.directory.appendingPathComponent("settings.json"))
+            settingsStore.update { demo.configure(&$0) }
+        }
+        #endif
         let loaded = favoritesStore.load()
-        let settingsStore = SettingsStore()
         let settings = settingsStore.current
 
         self.favoritesStore = favoritesStore
@@ -58,6 +67,9 @@ final class AppModel {
         AppDelegate.keepPlayingInMenuBar = { [unowned self] in self.keepPlayingInMenuBar }
         #endif
         #if DEBUG
+        if let demo {
+            Task { await demo.run(model: self) }
+        }
         let args = ProcessInfo.processInfo.arguments
         if let flag = args.firstIndex(of: "-autoplayFavorite"), args.indices.contains(flag + 1),
            let index = Int(args[flag + 1]) {
@@ -136,6 +148,14 @@ final class AppModel {
     }
 
     // MARK: - Favorites
+
+    #if DEBUG
+    /// Demo mode only: replaces the favorites.
+    func demoSetFavorites(_ stations: [Station]) {
+        for station in stations where !isFavorite(station) { favoritesStore.add(station) }
+        favorites = favoritesStore.favorites
+    }
+    #endif
 
     func isFavorite(_ station: Station) -> Bool {
         favorites.contains { $0.id == station.id }
