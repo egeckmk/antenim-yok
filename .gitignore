@@ -32,3 +32,11 @@ src/AntenimYok.App/*.slnx
 
 # Release output (scripts/publish.ps1)
 artifacts/
+
+# Apple
+apple/AntenimYok.xcodeproj/
+apple/AntenimYok/Resources/Info.plist
+.build/
+.swiftpm/
+*.xcworkspace/xcuserdata/
+apple/AntenimYok/Resources/AntenimYok.entitlements

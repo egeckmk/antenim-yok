@@ -1,0 +1,61 @@
+name: AntenimYok
+options:
+  bundleIdPrefix: com.egeckmk
+  deploymentTarget:
+    iOS: "18.0"
+    macOS: "15.0"
+  createIntermediateGroups: true
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+    MARKETING_VERSION: "0.1.0"
+    CURRENT_PROJECT_VERSION: "1"
+    DEVELOPMENT_TEAM: ""
+packages:
+  AntenimYokCore:
+    path: AntenimYokCore
+targets:
+  AntenimYok:
+    type: application
+    supportedDestinations: [iOS, macOS]
+    sources:
+      - AntenimYok
+    dependencies:
+      - package: AntenimYokCore
+    info:
+      path: AntenimYok/Resources/Info.plist
+      properties:
+        CFBundleDisplayName: Antenim Yok
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        LSApplicationCategoryType: public.app-category.music
+        UIBackgroundModes: [audio]
+        UILaunchScreen: {}
+        UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait, UIInterfaceOrientationLandscapeLeft, UIInterfaceOrientationLandscapeRight]
+        UISupportedInterfaceOrientations~ipad: [UIInterfaceOrientationPortrait, UIInterfaceOrientationPortraitUpsideDown, UIInterfaceOrientationLandscapeLeft, UIInterfaceOrientationLandscapeRight]
+        # Many Turkish stations only serve plain http streams and http logos.
+        NSAppTransportSecurity:
+          NSAllowsArbitraryLoads: true
+    entitlements:
+      path: AntenimYok/Resources/AntenimYok.entitlements
+      properties:
+        com.apple.security.app-sandbox: true
+        com.apple.security.network.client: true
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.egeckmk.antenimyok
+        PRODUCT_NAME: AntenimYok
+        INFOPLIST_KEY_CFBundleDisplayName: Antenim Yok
+        ENABLE_PREVIEWS: YES
+        CODE_SIGN_STYLE: Automatic
+        SWIFT_STRICT_CONCURRENCY: complete
+        SDKROOT: auto
+schemes:
+  AntenimYok:
+    build:
+      targets:
+        AntenimYok: all
+    test:
+      targets: []
+    run:
+      config: Debug
