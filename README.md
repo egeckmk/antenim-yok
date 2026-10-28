@@ -92,6 +92,11 @@ dotnet tool restore; .\scripts\publish.ps1 -Install     # Setup.exe üret ve bu 
 Değişiklikler: [CHANGELOG.md](CHANGELOG.md) · Plan: [docs/PLAN.md](docs/PLAN.md) · Sürümleme: [SemVer](.claude/skills/versioning/SKILL.md).
 Uygulama [Claude Code](https://claude.com/claude-code) yardımıyla geliştirildi. iPhone ve Mac sürümü (SwiftUI) sırada.
 
+## Lisans
+
+Copyright © 2026 Ege Çakmak. [GNU General Public License v3.0](LICENSE) ile lisanslanmıştır:
+kodu kullanabilir, değiştirebilir ve dağıtabilirsin; değiştirilmiş sürümü dağıtırsan onun kaynak kodunu da aynı lisansla açman gerekir.
+
 ---
 
 Yayınlar ve logolar ilgili radyo istasyonlarına aittir; Antenim Yok yalnızca herkese açık internet yayınlarını çalar ve ticari değildir.
