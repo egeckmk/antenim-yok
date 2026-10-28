@@ -55,6 +55,21 @@ Her sprint ≈ 1 akşam / 2–3 saat. Her sprint sonunda çalışan bir exe + k�
 - [x] A1 çalan MVP (AVPlayer, arka plan ses)
 - [ ] A2 kilit ekranı/AirPods + Mac menü çubuğu · A3 tasarım + widget · A4 Siri/Kestirmeler, iCloud favoriler
 
+#### A2 alt sprintleri (geliştirici ajan yazar, test ajanı doğrular)
+- [x] **A2.0 Şimdi Çalıyor + Mac kısayolları** (önceden yapıldı): Denetim Merkezi / medya tuşları / kilit ekranı kartı,
+      sonraki/önceki favori, baş harfli yedek kapak; Boşluk, ⌘1…9, ⌘F, ⌘↑/↓, M, Oynatma menüsü
+- [ ] **A2.1 Mac menü çubuğu:** `MenuBarExtra` (Windows tepsi menüsü gibi): favoriler (çalan işaretli, tıkla = çal),
+      Çal/Durdur, Pencereyi göster, Çıkış. Pencere kapanınca çalma sürer (Ayarlar: "Kapatınca menü çubuğunda çalmaya devam et",
+      varsayılan açık); kapalıysa son pencere kapanınca uygulama çıkar
+- [ ] **A2.2 Mac mini pencere:** küçük, her zaman üstte, yeniden boyutlanmaz; logo + ad, ⏮ ⏹ ⏭ (komşu favori), ses,
+      ⤢ ana pencereye dön; Şimdi Çalıyor çubuğunda ⧉ düğmesi; konumu hatırlanır (WIREFRAME "Mini pencere")
+- [ ] **A2.3 Mac oturum açılışında başlat:** Ayarlar'da anahtar (`SMAppService.mainApp`); açılışta pencere açmadan menü çubuğunda başlar
+- [ ] **A2.4 iPhone ses yolu:** kulaklık/AirPods çıkınca çalma durur (route change), telefon/kesinti sonrası devam;
+      kilit ekranı kartında kontrol düğmeleri (simülatörde görünmedi — gerçek cihazda Ege dener)
+- [ ] **A2.5 Kapanış + 0.2.0:** iki platformda derleme + tüm testler yeşil, CHANGELOG, A2'yi işaretle; `MARKETING_VERSION` 0.2.0,
+      `Release Apple 0.2.0` commit'i, yerel `mac-v0.2.0` tag'i, Mac `.app` zip'i (`apple/build/`, repoya girmez).
+      **Push ve GitHub Release yok** — Ege test edip onaylayınca
+
 #### A1 alt sprintleri (geliştirici ajan yazar, test ajanı doğrular)
 - [x] **A1.1 İskelet:** `apple/project.yml` (xcodegen) → `AntenimYok.xcodeproj`; tek multiplatform hedef (iOS 18+ / macOS 15+),
       bundle id `com.egeckmk.antenimyok`, `MARKETING_VERSION` 0.1.0, iOS `UIBackgroundModes=audio`, macOS sandbox + ağ istemcisi;
