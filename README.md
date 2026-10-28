@@ -11,7 +11,7 @@ Favorilerini seç, tek tıkla çal; pencereyi kapat, tepside çalmaya devam etsi
 
 ## İndir
 
-**[Son sürümü indir →](https://github.com/egeckmk/antenim-yok/releases/latest)** `Ege.AntenimYok-win-Setup.exe` dosyasını çalıştırman yeterli.
+**[Windows için son sürümü indir →](https://github.com/egeckmk/antenim-yok/releases?q=Windows&expanded=true)** `Ege.AntenimYok-win-Setup.exe` dosyasını çalıştırman yeterli.
 
 - Yönetici izni istemez; birkaç saniyede kurulur ve açılır.
 - Kendini güncel tutar: yeni sürüm arka planda iner, "Yeniden başlat" deyince yüklenir.
@@ -89,7 +89,7 @@ dotnet tool restore; .\scripts\publish.ps1 -Install     # Setup.exe üret ve bu 
 | `src/AntenimYok.App` | WinUI 3 arayüzü, MediaPlayer, medya tuşları, tepsi, güncelleme (Velopack) |
 | `tests/AntenimYok.Tests` | xUnit testleri |
 
-Değişiklikler: [CHANGELOG.md](CHANGELOG.md) · Plan: [docs/PLAN.md](docs/PLAN.md) · Sürümleme: [SemVer](.claude/skills/versioning/SKILL.md).
+Değişiklikler (Windows): [CHANGELOG.md](CHANGELOG.md) · Plan: [docs/PLAN.md](docs/PLAN.md) · Sürümleme: [SemVer](.claude/skills/versioning/SKILL.md).
 Uygulama [Claude Code](https://claude.com/claude-code) yardımıyla geliştirildi. iPhone ve Mac sürümü (SwiftUI) sırada.
 
 ## Lisans

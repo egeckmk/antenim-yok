@@ -1,6 +1,6 @@
-# Değişiklik günlüğü
+# Değişiklik günlüğü — Windows
 
-Bu dosyadaki tüm önemli değişiklikler burada tutulur.
+Windows uygulamasının önemli değişiklikleri (Apple: `apple/CHANGELOG.md`). Tag'ler `win-vX.Y.Z`; `v0.1.0`–`v1.0.0` eski şemadır.
 Biçim [Keep a Changelog](https://keepachangelog.com/tr-TR/1.1.0/), sürümleme [Semantic Versioning](https://semver.org/lang/tr/)
 (kurallar: `.claude/skills/versioning/SKILL.md`).
 

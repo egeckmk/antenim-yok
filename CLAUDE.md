@@ -1,12 +1,13 @@
 # Antenim Yok — Çalışma kuralları
 
-Reklamsız, **sadece kişisel kullanım** için radyo uygulaması (App Store / Store yok). Sahibi: Ege.
+Reklamsız radyo uygulaması (App Store / Store yok; public repo, GPL-3.0). Sahibi: Ege.
 
 - Dil: Ege ile **Türkçe** konuş. Kod, tip/metot adları ve commit mesajları İngilizce; arayüz metinleri Türkçe.
 - Plan: `docs/PLAN.md`. Bir sprint maddesi bitince `- [x]` yap.
 - Arayüz işi (XAML/SwiftUI, ekran, bileşen, tema, erişilebilirlik) yaparken **`native-app-ui` skill'ini kullan** (`.claude/skills/native-app-ui/`).
-- Sürüm: SemVer, tek kaynak `Directory.Build.props`. Sürüm çıkarırken, CHANGELOG yazarken ve kullanıcıya görünen
-  her değişikliği commit'lerken **`versioning` skill'ini kullan** (`.claude/skills/versioning/`) → `CHANGELOG.md` `[Yayınlanmadı]`.
+- Sürüm: SemVer, **platform başına bağımsız** (Windows: `Directory.Build.props`, tag `win-vX.Y.Z`, `CHANGELOG.md`;
+  Apple: `MARKETING_VERSION`, tag `mac-vX.Y.Z`, `apple/CHANGELOG.md`). Sürüm çıkarırken, CHANGELOG yazarken ve kullanıcıya
+  görünen her değişikliği commit'lerken **`versioning` skill'ini kullan** (`.claude/skills/versioning/`).
 
 ## Platformlar
 | Platform | Teknoloji | Klasör |

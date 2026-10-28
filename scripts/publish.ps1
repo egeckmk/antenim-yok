@@ -14,7 +14,7 @@
 .EXAMPLE
     .\scripts\publish.ps1                 # build Setup.exe locally
     .\scripts\publish.ps1 -Install        # build and run Setup.exe on this PC
-    .\scripts\publish.ps1 -Upload         # build and publish the GitHub release vX.Y.Z (tag must exist)
+    .\scripts\publish.ps1 -Upload         # build and publish the GitHub release "Antenim Yok X.Y.Z — Windows" (tag win-vX.Y.Z)
 #>
 [CmdletBinding()]
 param(
@@ -62,17 +62,17 @@ try {
     Write-Host "Hazır: $setup" -ForegroundColor Green
 
     if ($Upload) {
-        Write-Host "GitHub'a yükleniyor: v$version" -ForegroundColor Cyan
+        Write-Host "GitHub'a yükleniyor: win-v$version" -ForegroundColor Cyan
         # Full output also goes to artifacts\vpk-upload.log (token masked) so a failure can be read afterwards.
         $log = Join-Path $root 'artifacts\vpk-upload.log'
         $output = & dotnet vpk upload github --repoUrl $repoUrl --token $env:GITHUB_TOKEN -o $releasesDir `
-            --publish --releaseName "Antenim Yok $version" --tag "v$version" --verbose 2>&1
+            --publish --releaseName "Antenim Yok $version — Windows" --tag "win-v$version" --verbose 2>&1
         $exitCode = $LASTEXITCODE
         $text = ($output | Out-String).Replace($env:GITHUB_TOKEN, '***')
         [IO.File]::WriteAllText($log, $text, [Text.UTF8Encoding]::new($false))
         Write-Host $text
         if ($exitCode -ne 0) { throw "vpk upload failed ($exitCode); details: $log" }
-        Write-Host "Yayınlandı: $repoUrl/releases/tag/v$version" -ForegroundColor Green
+        Write-Host "Yayınlandı: $repoUrl/releases/tag/win-v$version" -ForegroundColor Green
     }
 
     if ($Install) {
