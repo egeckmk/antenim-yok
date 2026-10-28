@@ -7,6 +7,7 @@ Biçim [Keep a Changelog](https://keepachangelog.com/tr-TR/1.1.0/), sürümleme 
 ## [Yayınlanmadı]
 
 ### Eklendi
+- iPhone: kulaklık / AirPods / araç sesi çıkarılınca çalma durur (hoparlörden devam etmez); arama ya da başka uygulama kesintisinden sonra, sistem izin verirse çalma kendiliğinden sürer.
 - Mac: Ayarlar'da "Oturum açılınca başlat"; açılışta pencere açılmadan menü çubuğunda başlar.
 - Mac mini oynatıcı: küçük, her zaman üstte pencere; önceki/sonraki favori, çal/durdur, ses; alt çubuktaki düğmeyle açılır, konumu hatırlanır.
 - Mac menü çubuğu simgesi: favoriler (çalan işaretli, tıklayınca çalar), Çal/Durdur, Pencereyi göster, Çıkış. Pencereyi kapatınca çalma menü çubuğundan sürer; Ayarlar'dan kapatılabilir.

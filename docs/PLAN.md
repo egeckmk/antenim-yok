@@ -64,7 +64,7 @@ Her sprint ≈ 1 akşam / 2–3 saat. Her sprint sonunda çalışan bir exe + k�
 - [x] **A2.2 Mac mini pencere:** küçük, her zaman üstte, yeniden boyutlanmaz; logo + ad, ⏮ ⏹ ⏭ (komşu favori), ses,
       ⤢ ana pencereye dön; Şimdi Çalıyor çubuğunda ⧉ düğmesi; konumu hatırlanır (WIREFRAME "Mini pencere")
 - [x] **A2.3 Mac oturum açılışında başlat:** Ayarlar'da anahtar (`SMAppService.mainApp`); açılışta pencere açmadan menü çubuğunda başlar
-- [ ] **A2.4 iPhone ses yolu:** kulaklık/AirPods çıkınca çalma durur (route change), telefon/kesinti sonrası devam;
+- [x] **A2.4 iPhone ses yolu:** kulaklık/AirPods çıkınca çalma durur (route change), telefon/kesinti sonrası devam;
       kilit ekranı kartında kontrol düğmeleri (simülatörde görünmedi — gerçek cihazda Ege dener)
 - [ ] **A2.5 Kapanış + 0.2.0:** iki platformda derleme + tüm testler yeşil, CHANGELOG, A2'yi işaretle; `MARKETING_VERSION` 0.2.0,
       `Release Apple 0.2.0` commit'i, yerel `mac-v0.2.0` tag'i, Mac `.app` zip'i (`apple/build/`, repoya girmez).

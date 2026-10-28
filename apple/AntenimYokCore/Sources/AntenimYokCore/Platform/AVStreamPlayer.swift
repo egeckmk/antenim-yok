@@ -161,32 +161,76 @@ public final class AVStreamPlayer: StreamPlayer {
 
     #if os(iOS)
     private func observeAudioSession() {
+        let center = NotificationCenter.default
         // A phone call or another app takes the audio: AVPlayer pauses itself; resume when the system says so.
-        NotificationCenter.default.addObserver(
-            forName: AVAudioSession.interruptionNotification, object: nil, queue: .main
-        ) { [weak self] notification in
+        center.addObserver(forName: AVAudioSession.interruptionNotification, object: nil, queue: .main) { [weak self] notification in
             let typeValue = notification.userInfo?[AVAudioSessionInterruptionTypeKey] as? UInt
             let optionsValue = notification.userInfo?[AVAudioSessionInterruptionOptionKey] as? UInt
             MainActor.assumeIsolated {
                 guard let self, let typeValue, let type = AVAudioSession.InterruptionType(rawValue: typeValue) else { return }
-                switch type {
-                case .began:
-                    self.isInterrupted = true
+                let event: AudioInterruptionEvent? = switch type {
+                case .began: .began
                 case .ended:
-                    self.isInterrupted = false
-                    let shouldResume = optionsValue.map { AVAudioSession.InterruptionOptions(rawValue: $0).contains(.shouldResume) } ?? false
-                    if self.isOpen {
-                        if shouldResume {
-                            self.activateAudioSession()
-                            self.player.play()
-                        } else {
-                            self.emit(.pausedBySystem)
-                        }
-                    }
-                @unknown default:
-                    break
+                    .ended(shouldResume: optionsValue.map { AVAudioSession.InterruptionOptions(rawValue: $0).contains(.shouldResume) } ?? false)
+                @unknown default: nil
+                }
+                guard let event else { return }
+                self.handleInterruption(event)
+            }
+        }
+        // Headphones / AirPods / car removed: stop instead of continuing on the speaker.
+        center.addObserver(forName: AVAudioSession.routeChangeNotification, object: nil, queue: .main) { [weak self] notification in
+            let reasonValue = notification.userInfo?[AVAudioSessionRouteChangeReasonKey] as? UInt
+            let previous = notification.userInfo?[AVAudioSessionRouteChangePreviousRouteKey] as? AVAudioSessionRouteDescription
+            let outputs = previous?.outputs.map { Self.outputKind(of: $0.portType) } ?? []
+            MainActor.assumeIsolated {
+                guard let self, self.isOpen else { return }
+                let reason = reasonValue.flatMap { AVAudioSession.RouteChangeReason(rawValue: $0) }.map(Self.routeReason) ?? .unknown
+                if AudioRoutePolicy.shouldStop(reason: reason, previousOutputs: outputs) {
+                    self.emit(.pausedBySystem)
                 }
             }
+        }
+    }
+
+    private func handleInterruption(_ event: AudioInterruptionEvent) {
+        switch AudioInterruptionPolicy.action(for: event) {
+        case .waitForEnd:
+            isInterrupted = true
+        case .resume:
+            isInterrupted = false
+            if isOpen {
+                activateAudioSession()
+                player.play()
+            }
+        case .stop:
+            isInterrupted = false
+            if isOpen { emit(.pausedBySystem) }
+        }
+    }
+
+    private nonisolated static func outputKind(of port: AVAudioSession.Port) -> AudioOutputKind {
+        switch port {
+        case .builtInSpeaker: .builtInSpeaker
+        case .builtInReceiver: .builtInReceiver
+        case .headphones, .usbAudio, .headsetMic: .headphones
+        case .bluetoothA2DP, .bluetoothLE, .bluetoothHFP: .bluetooth
+        case .airPlay: .airPlay
+        case .carAudio: .car
+        default: .other
+        }
+    }
+
+    private nonisolated static func routeReason(_ reason: AVAudioSession.RouteChangeReason) -> AudioRouteChangeReason {
+        switch reason {
+        case .newDeviceAvailable: .newDeviceAvailable
+        case .oldDeviceUnavailable: .oldDeviceUnavailable
+        case .categoryChange: .categoryChange
+        case .override: .override
+        case .wakeFromSleep: .wakeFromSleep
+        case .noSuitableRouteForCategory: .noSuitableRouteForCategory
+        case .routeConfigurationChange: .routeConfigurationChange
+        default: .unknown
         }
     }
     #endif
