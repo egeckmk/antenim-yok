@@ -64,7 +64,7 @@ Her sprint ≈ 1 akşam / 2–3 saat. Her sprint sonunda çalışan bir exe + k�
 - [x] **A1.4 Çalma motoru:** `RadioPlayer` (`AVPlayer` soyutlamasıyla test edilebilir): durumlar (bağlanıyor/çalıyor/hata), ~10 sn'de
       açılmazsa sıradaki akış, yeniden bağlanma (artan bekleme ≤5 dk, ağ gelince hemen, 15 sn takılma = kopma), iOS `AVAudioSession`
       arka plan, ICY şarkı adı
-- [ ] **A1.5 Arayüz:** Favoriler / Keşfet / Ayarlar (Mac: `NavigationSplitView`, iPhone: `TabView`), arama, tür süzgeci,
+- [x] **A1.5 Arayüz:** Favoriler / Keşfet / Ayarlar (Mac: `NavigationSplitView`, iPhone: `TabView`), arama, tür süzgeci,
       favoriye ekle/çıkar, Şimdi Çalıyor çubuğu (çal/durdur, ses, şarkı adı), logolar, açık/koyu, VoiceOver adları — `native-app-ui`
 - [ ] **A1.6 Kapanış:** iki platformda derleme + tüm testler yeşil, gerçek istasyonla elle çalma denemesi (Mac), CHANGELOG 0.1.0,
       A1'i işaretle, `docs/NEXT.md` sil

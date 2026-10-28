@@ -34,15 +34,24 @@ public final class RadioPlayer {
 
     /// 0.0 - 1.0
     public var volume: Double {
-        didSet {
-            volume = min(max(volume, 0), 1)
-            player.volume = volume
+        get { storedVolume }
+        set {
+            storedVolume = min(max(newValue, 0), 1)
+            player.volume = storedVolume
         }
     }
 
     public var isMuted: Bool {
-        didSet { player.isMuted = isMuted }
+        get { storedIsMuted }
+        set {
+            storedIsMuted = newValue
+            player.isMuted = newValue
+        }
     }
+
+    // Backing storage: a didSet that re-assigns an @Observable property recurses, so volume is clamped in a setter.
+    private var storedVolume: Double
+    private var storedIsMuted: Bool
 
     public let openTimeout: Duration
     public let stallTimeout: Duration
@@ -75,9 +84,9 @@ public final class RadioPlayer {
         self.openTimeout = openTimeout
         self.stallTimeout = stallTimeout
         self.reconnectDelays = reconnectDelays
-        self.volume = min(max(volume, 0), 1)
-        self.isMuted = isMuted
-        player.volume = self.volume
+        self.storedVolume = min(max(volume, 0), 1)
+        self.storedIsMuted = isMuted
+        player.volume = storedVolume
         player.isMuted = isMuted
         player.onEvent = { [weak self] event in self?.handle(event) }
     }
