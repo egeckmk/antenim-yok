@@ -3,6 +3,7 @@
 Reklamsız radyo uygulaması (App Store / Store yok; public repo, GPL-3.0). Sahibi: Ege.
 
 - Dil: Ege ile **Türkçe** konuş. Kod, tip/metot adları ve commit mesajları İngilizce; arayüz metinleri Türkçe.
+- Commit mesajlarına `Co-Authored-By` (veya başka bir AI imza) satırı **ekleme**; Release'lerde katkıcı olarak görünmesin.
 - Plan: `docs/PLAN.md`. Bir sprint maddesi bitince `- [x]` yap.
 - Arayüz işi (XAML/SwiftUI, ekran, bileşen, tema, erişilebilirlik) yaparken **`native-app-ui` skill'ini kullan** (`.claude/skills/native-app-ui/`).
 - Sürüm: SemVer, **platform başına bağımsız** (Windows: `Directory.Build.props`, tag `win-vX.Y.Z`, `CHANGELOG.md`;
