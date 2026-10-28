@@ -49,7 +49,7 @@ Her sprint ≈ 1 akşam / 2–3 saat. Her sprint sonunda çalışan bir exe + k�
       yayın çıktısındaki eksik `.pri` düzeltildi, kullanılmayan SDK parçaları atıldı (275 → 220 MB, kurulum 92 MB)
 - [x] Windows ile başlat (Ayarlar; HKCU Run, `--background` → pencere açmadan tepside)
 - [x] Otomatik güncelleme: Velopack + GitHub Releases (açılışta ve 6 saatte bir; "Yeniden başlat" bilgi çubuğu). Repo public olunca çalışır
-- [ ] README (ekran görüntüleri, kurulum) → sonra repo public
+- [x] README (ekran görüntüleri, kurulum, SSS) → sırada: lisans kararı, repo public, 1.0.0 GitHub Release
 
 ### Sonra — Apple (SwiftUI Multiplatform)
 - [ ] A1 çalan MVP (AVPlayer, arka plan ses) · A2 kilit ekranı/AirPods + Mac menü çubuğu · A3 tasarım + widget · A4 Siri/Kestirmeler, iCloud favoriler

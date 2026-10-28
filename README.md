@@ -2,10 +2,96 @@
 
 > Reklam yok, anten yok, dert yok.
 
-Reklamsız, kişisel kullanım için radyo uygulaması. Önce **Windows 11** (.NET 10 + WinUI 3), sonra **iPhone + Mac** (SwiftUI).
+Türk radyolarını reklamsız, sade bir pencereden dinlemek için **Windows 11** uygulaması.
+Favorilerini seç, tek tıkla çal; pencereyi kapat, tepside çalmaya devam etsin.
 
-- İstasyonlar: [Radio Browser](https://www.radio-browser.info) üzerinden Keşfet'te aranır; favoriler cihazda tutulur
-- Plan: [`docs/PLAN.md`](docs/PLAN.md)
-- UI kuralları: [`.claude/skills/native-app-ui`](.claude/skills/native-app-ui/SKILL.md)
+<p align="center">
+  <img src="docs/screenshots/favorites-dark.png" width="820" alt="Antenim Yok ana pencere: favori istasyonlar, çalan Metro FM ve şarkı adı">
+</p>
 
-Yayınlar istasyonların herkese açık internet akışlarıdır; uygulama yalnızca kişisel kullanım içindir, dağıtılmaz.
+## İndir
+
+**[Son sürümü indir →](https://github.com/egeckmk/antenim-yok/releases/latest)** `Ege.AntenimYok-win-Setup.exe` dosyasını çalıştırman yeterli.
+
+- Yönetici izni istemez; birkaç saniyede kurulur ve açılır.
+- Kendini güncel tutar: yeni sürüm arka planda iner, "Yeniden başlat" deyince yüklenir.
+- Windows 10 (1809+) / Windows 11, 64 bit.
+
+> Uygulama imzalı değil. Windows "Windows kişisel bilgisayarınızı korudu" derse **Ek bilgi → Yine de çalıştır**.
+
+## Neler var
+
+| | |
+|---|---|
+| **Favoriler** | Sevdiğin istasyonlar logolarıyla bir ızgarada; tıkla çal, tekrar tıkla durdur. |
+| **Keşfet** | Türkiye'deki 600'den fazla radyo ([Radio Browser](https://www.radio-browser.info)); ada göre ara, türe göre süz (Pop, Rock, Türkü, Türk Sanat, Arabesk, Nostalji, Caz…), yıldızla favorilere ekle. |
+| **Şarkı adı** | Destekleyen istasyonlarda çalan şarkı alt çubukta, mini oynatıcıda ve Windows medya kartında görünür. |
+| **Windows ile uyumlu** | Klavye medya tuşları, Hızlı Ayarlar'daki medya kartı, tepsi simgesi, açık/koyu tema, Mica. |
+| **Mini oynatıcı** | Her zaman üstte duran küçük pencere: önceki / durdur / sonraki ve ses. |
+| **Kopmaz** | Bir yayın açılmazsa yedeğine geçer; bağlantı koparsa kendi kendine yeniden bağlanır. |
+| **Sade** | Hesap yok, reklam yok, veri toplama yok. Favoriler ve ayarlar yalnızca senin bilgisayarında. |
+
+## Ekran görüntüleri
+
+<table>
+  <tr>
+    <td width="50%"><img src="docs/screenshots/discover.png" alt="Keşfet: Rock türündeki Türk radyoları"><br><sub><i>Keşfet: türe göre süz, yıldızla favorilere ekle</i></sub></td>
+    <td width="50%"><img src="docs/screenshots/favorites-light.png" alt="Favoriler, açık tema"><br><sub><i>Açık tema</i></sub></td>
+  </tr>
+  <tr>
+    <td><img src="docs/screenshots/mini-player.png" alt="Mini oynatıcı"><br><sub><i>Her zaman üstte mini oynatıcı</i></sub><br><br>
+        <img src="docs/screenshots/media-card.png" width="360" alt="Windows Hızlı Ayarlar medya kartı"><br><sub><i>Windows medya kartı ve medya tuşları; karta tıklayınca uygulama açılır</i></sub></td>
+    <td><img src="docs/screenshots/settings.png" alt="Ayarlar"><br><sub><i>Ayarlar: tema, tepside çalma, Windows ile başlat, şarkı adı</i></sub></td>
+  </tr>
+</table>
+
+## Klavye kısayolları
+
+| Tuş | Ne yapar |
+|---|---|
+| `Boşluk` | Çal / durdur |
+| `Ctrl` + `1`…`9` | Sıradaki favoriyi çal |
+| `Ctrl` + `F` | İstasyon ara |
+| `Ctrl` + `↑` / `↓` | Sesi aç / kıs |
+| `M` | Sessiz |
+| Medya tuşları | Çal/durdur, önceki/sonraki favori |
+
+## Sık sorulanlar
+
+**Bazı istasyonlarda şarkı adı neden çıkmıyor?**
+Şarkı adını istasyonun kendisi göndermeli. Bazı yayınlar göndermiyor, HLS yayınlarda da bu yöntem çalışmıyor. Ayarlar'dan tamamen kapatabilirsin (şarkı adı için yayına ikinci bir bağlantı açılıyor).
+
+**Bir istasyon çalmıyor.**
+İstasyon bilgileri topluluk tarafından tutulan Radio Browser'dan gelir; bazen adres eskir. Keşfet'te aynı istasyonun başka bir kaydını dene. Bazı kurum ağları radyo yayınlarını engeller.
+
+**Kurulum neden yaklaşık 90 MB?**
+Uygulama .NET ve Windows App SDK'yı kendi içinde taşır; bilgisayarına ayrıca bir şey kurman gerekmez.
+
+**Verilerim nerede, nasıl kaldırırım?**
+Uygulama `%LOCALAPPDATA%\Ege.AntenimYok`, favoriler ve ayarlar `%LOCALAPPDATA%\AntenimYok` klasöründe. **Ayarlar → Uygulamalar → Antenim Yok → Kaldır** uygulamayı siler; favorilerini de silmek istersen ikinci klasörü elle sil.
+
+**İnternette nereye bağlanıyor?**
+Yalnızca çaldığın istasyonun yayınına, istasyon logolarına, Keşfet için Radio Browser'a ve güncellemeler için GitHub'a.
+
+## Geliştirme
+
+.NET 10 SDK ve Windows 11 yeterli.
+
+```powershell
+dotnet build AntenimYok.slnx -c Debug -p:Platform=x64   # derle
+dotnet test tests/AntenimYok.Tests                      # testler
+dotnet tool restore; .\scripts\publish.ps1 -Install     # Setup.exe üret ve bu bilgisayara kur
+```
+
+| Klasör | İçerik |
+|---|---|
+| `src/AntenimYok.Core` | Platformdan bağımsız mantık: çalma ve yedek akış, yeniden bağlanma, Radio Browser, şarkı adı (ICY), favoriler, ayarlar |
+| `src/AntenimYok.App` | WinUI 3 arayüzü, MediaPlayer, medya tuşları, tepsi, güncelleme (Velopack) |
+| `tests/AntenimYok.Tests` | xUnit testleri |
+
+Değişiklikler: [CHANGELOG.md](CHANGELOG.md) · Plan: [docs/PLAN.md](docs/PLAN.md) · Sürümleme: [SemVer](.claude/skills/versioning/SKILL.md).
+Uygulama [Claude Code](https://claude.com/claude-code) yardımıyla geliştirildi. iPhone ve Mac sürümü (SwiftUI) sırada.
+
+---
+
+Yayınlar ve logolar ilgili radyo istasyonlarına aittir; Antenim Yok yalnızca herkese açık internet yayınlarını çalar ve ticari değildir.
