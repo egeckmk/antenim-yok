@@ -7,6 +7,7 @@ Biçim [Keep a Changelog](https://keepachangelog.com/tr-TR/1.1.0/), sürümleme 
 ## [Yayınlanmadı]
 
 ### Eklendi
+- Mac: Ayarlar'da "Oturum açılınca başlat"; açılışta pencere açılmadan menü çubuğunda başlar.
 - Mac mini oynatıcı: küçük, her zaman üstte pencere; önceki/sonraki favori, çal/durdur, ses; alt çubuktaki düğmeyle açılır, konumu hatırlanır.
 - Mac menü çubuğu simgesi: favoriler (çalan işaretli, tıklayınca çalar), Çal/Durdur, Pencereyi göster, Çıkış. Pencereyi kapatınca çalma menü çubuğundan sürer; Ayarlar'dan kapatılabilir.
 - Sistem "Şimdi Çalıyor": Mac'te Denetim Merkezi kartı ve medya tuşları, iPhone'da kilit ekranı ve AirPods; çal/durdur ve sonraki/önceki favori, şarkı adı, istasyon adı ve logo gösterilir.

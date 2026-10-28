@@ -3,6 +3,9 @@ import SwiftUI
 
 struct SettingsView: View {
     @Environment(AppModel.self) private var model
+    #if os(macOS)
+    @State private var launchAtLogin = LaunchAtLogin()
+    #endif
 
     var body: some View {
         @Bindable var model = model
@@ -24,10 +27,19 @@ struct SettingsView: View {
             #if os(macOS)
             Section {
                 Toggle("Kapatınca menü çubuğunda çalmaya devam et", isOn: $model.keepPlayingInMenuBar)
+                Toggle("Oturum açılınca başlat", isOn: Binding(
+                    get: { launchAtLogin.isEnabled },
+                    set: { launchAtLogin.set($0) }))
             } header: {
                 Text("Pencere")
             } footer: {
-                Text("Kapalıyken son pencereyi kapatmak uygulamayı da kapatır.")
+                if let error = launchAtLogin.errorMessage {
+                    Text(error)
+                } else if launchAtLogin.needsApproval {
+                    Text("Sistem Ayarları > Genel > Açılış Öğeleri'nde Antenim Yok'a izin ver.")
+                } else {
+                    Text("Oturum açılınca pencere açılmadan menü çubuğunda başlar. Kapalıyken son pencereyi kapatmak uygulamayı da kapatır.")
+                }
             }
             Section("Klavye kısayolları") {
                 LabeledContent("Çal / durdur", value: "Boşluk")
