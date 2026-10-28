@@ -63,9 +63,15 @@ try {
 
     if ($Upload) {
         Write-Host "GitHub'a yükleniyor: v$version" -ForegroundColor Cyan
-        & dotnet vpk upload github --repoUrl $repoUrl --token $env:GITHUB_TOKEN -o $releasesDir `
-            --publish --releaseName "Antenim Yok $version" --tag "v$version"
-        if ($LASTEXITCODE -ne 0) { throw "vpk upload failed ($LASTEXITCODE)." }
+        # Full output also goes to artifacts\vpk-upload.log (token masked) so a failure can be read afterwards.
+        $log = Join-Path $root 'artifacts\vpk-upload.log'
+        $output = & dotnet vpk upload github --repoUrl $repoUrl --token $env:GITHUB_TOKEN -o $releasesDir `
+            --publish --releaseName "Antenim Yok $version" --tag "v$version" --verbose 2>&1
+        $exitCode = $LASTEXITCODE
+        $text = ($output | Out-String).Replace($env:GITHUB_TOKEN, '***')
+        [IO.File]::WriteAllText($log, $text, [Text.UTF8Encoding]::new($false))
+        Write-Host $text
+        if ($exitCode -ne 0) { throw "vpk upload failed ($exitCode); details: $log" }
         Write-Host "Yayınlandı: $repoUrl/releases/tag/v$version" -ForegroundColor Green
     }
 
