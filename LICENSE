@@ -672,3 +672,40 @@ may consider it more useful to permit linking proprietary applications with
 the library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.  But first, please read
 <https://www.gnu.org/licenses/why-not-lgpl.html>.
+
+
+=====================================================================
+ADDITIONAL PERMISSION UNDER GNU GPL VERSION 3, SECTION 7
+=====================================================================
+
+Antenim Yok - Copyright (C) 2026 Ege Cakmak
+
+As an additional permission under section 7 of the GNU General Public
+License version 3, the copyright holder(s) of Antenim Yok give you
+permission to convey a covered work through the Apple App Store, the Mac
+App Store, TestFlight, and similar application distribution services
+(for example the Microsoft Store or Google Play), even if the terms of
+service or usage rules of such a service ("Store Terms") impose
+restrictions that this License would otherwise forbid, such as limits on
+the devices on which you may use the work, digital rights management
+applied by the service, or a requirement that the work be used under the
+service's standard end-user license agreement, provided that:
+
+  a) you also make the Corresponding Source of the work you distribute
+     available to the public under this License (for example in a public
+     source code repository) and state where it can be found;
+
+  b) the Store Terms do not prevent recipients who obtained the source
+     code from the repository mentioned in (a) from exercising their
+     rights under this License with respect to that source code (the
+     rights to copy, modify, build and run it); and
+
+  c) you comply with this License in all other respects.
+
+This permission applies only to the distribution of the work through
+such services. It does not change what you may do with the source code,
+and it does not apply to third-party components that Antenim Yok uses
+under their own licenses.
+
+If you modify this program, you may extend this additional permission to
+your version, or delete it, as described in section 7 of the License.

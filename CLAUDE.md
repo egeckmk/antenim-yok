@@ -1,6 +1,6 @@
 # Antenim Yok — Çalışma kuralları
 
-Reklamsız radyo uygulaması (App Store / Store yok; public repo, GPL-3.0). Sahibi: Ege.
+Reklamsız radyo uygulaması (public repo, GPL-3.0 + App Store ek izni). Dağıtım: Apple → **App Store** (iPhone + Mac tek kayıt, mağaza sayfası yalnızca Türkçe); Windows → GitHub Releases (Windows'ta Store yok). Sahibi: Ege.
 
 - Dil: Ege ile **Türkçe** konuş. Kod, tip/metot adları ve commit mesajları İngilizce; arayüz metinleri Türkçe.
 - Commit mesajlarına `Co-Authored-By` (veya başka bir AI imza) satırı **ekleme**; Release'lerde katkıcı olarak görünmesin.

@@ -90,17 +90,23 @@ dotnet tool restore; .\scripts\publish.ps1 -Install     # Setup.exe üret ve bu 
 | `tests/AntenimYok.Tests` | xUnit testleri |
 
 Değişiklikler (Windows): [CHANGELOG.md](CHANGELOG.md) · Plan: [docs/PLAN.md](docs/PLAN.md) · Sürümleme: [SemVer](.claude/skills/versioning/SKILL.md).
-Uygulama [Claude Code](https://claude.com/claude-code) yardımıyla geliştirildi. iPhone ve Mac sürümü (SwiftUI) sırada.
+Uygulama [Claude Code](https://claude.com/claude-code) yardımıyla geliştirildi. 
+
+## iPhone ve Mac (App Store)
+
+iPhone ve Mac için aynı SwiftUI uygulaması App Store'a çıkıyor (tek kayıt, mağaza sayfası Türkçe): Favoriler, Keşfet, kilit ekranı /
+Denetim Merkezi kartı ve AirPods, Mac'te menü çubuğu ve mini oynatıcı. Kaynak `apple/` altında; mantık `apple/AntenimYokCore` Swift paketinde.
+Gizlilik: [docs/privacy.md](docs/privacy.md) · Destek: [Issues](https://github.com/egeckmk/antenim-yok/issues) · Değişiklikler: [apple/CHANGELOG.md](apple/CHANGELOG.md).
+
+Kaynaktan derlemek için `apple/` altında: `brew install xcodegen`, `cp Config/Local.xcconfig.example Config/Local.xcconfig` ve dosyaya kendi
+Apple Team ID'ni yaz (`DEVELOPMENT_TEAM = XXXXXXXXXX`; dosya git'e girmez), sonra `xcodegen generate` ve `AntenimYok.xcodeproj`'i aç.
 
 ## Lisans
 
 Copyright © 2026 Ege Çakmak. [GNU General Public License v3.0](LICENSE) ile lisanslanmıştır:
 kodu kullanabilir, değiştirebilir ve dağıtabilirsin; değiştirilmiş sürümü dağıtırsan onun kaynak kodunu da aynı lisansla açman gerekir.
+Lisansa, uygulamanın App Store gibi mağazalardan dağıtılmasına izin veren bir ek izin eklenmiştir (bkz. [LICENSE](LICENSE), "Additional permission").
 
 ---
 
 Yayınlar ve logolar ilgili radyo istasyonlarına aittir; Antenim Yok yalnızca herkese açık internet yayınlarını çalar ve ticari değildir.
-
-## Apple (iPhone + Mac) — ilk kurulum
-`apple/` altında: `brew install xcodegen`, `cp Config/Local.xcconfig.example Config/Local.xcconfig` ve dosyaya kendi Apple Team ID'ni yaz
-(`DEVELOPMENT_TEAM = XXXXXXXXXX`; dosya git'e girmez), sonra `xcodegen generate` ve `AntenimYok.xcodeproj`'i aç.

@@ -98,7 +98,7 @@ Her sprint ≈ 1 akşam / 2–3 saat. Her sprint sonunda çalışan bir exe + k�
       dosya yokken de derlenir
 - [x] **S2 Simge katmanları:** özgün SVG katmanları (`apple/Design/AppIcon/`; SF Symbols kullanılamaz — lisans) →
       Ege Icon Composer'da `AppIcon.icon` yapar
-- [ ] **S3 Lisans + belgeler:** LICENSE'a GPL-3.0 §7 App Store ek izni, `docs/privacy.md` (Türkçe gizlilik politikası),
+- [x] **S3 Lisans + belgeler:** LICENSE'a GPL-3.0 §7 App Store ek izni, `docs/privacy.md` (Türkçe gizlilik politikası),
       README, `CLAUDE.md` (Store kararı), versioning skill (Apple: App Store, derleme numarası)
 - [ ] **S4 Mağaza içeriği:** `apple/AppStore/tr/` (ad, alt başlık, açıklama, anahtar kelimeler, promosyon metni, yenilikler,
       inceleme notu — 5.2.3 için Radio Browser açıklaması, App Privacy = "Veri toplanmıyor", yaş derecesi, kategori Müzik);

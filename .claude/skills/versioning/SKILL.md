@@ -17,8 +17,8 @@ Windows (WinUI, `src/`) ve Apple (SwiftUI — iPhone + Mac, `apple/`) **ayrı ko
 | Sürümün tek kaynağı | `Directory.Build.props` → `<Version>` | Xcode projesi → `MARKETING_VERSION` (+ `CURRENT_PROJECT_VERSION` her derlemede artar) |
 | CHANGELOG | `CHANGELOG.md` (kök, Windows) | `apple/CHANGELOG.md` |
 | Git tag | `win-vX.Y.Z` | `mac-vX.Y.Z` (iPhone + Mac aynı numarayı taşır) |
-| GitHub Release adı | `Antenim Yok X.Y.Z — Windows` | `Antenim Yok X.Y.Z — Mac` |
-| Dağıtım / güncelleme | Velopack (`scripts/publish.ps1`), `releases.win.json` | Mac: Release'e eklenen dosya; iPhone: Xcode'dan kurulum (Release yok) |
+| GitHub Release adı | `Antenim Yok X.Y.Z — Windows` | yok (mağaza sürümü; istenirse `Antenim Yok X.Y.Z — Apple` notu) |
+| Dağıtım / güncelleme | Velopack (`scripts/publish.ps1`), `releases.win.json` | **App Store** (iPhone + Mac tek kayıt; güncellemeyi mağaza dağıtır). GitHub Release yok |
 
 - Bir hata **yalnızca** bir platformdaysa yalnızca o platform PATCH alır. Her iki platformu da etkileyen bir değişiklik
   (ör. Radio Browser'daki bir sorun) her iki CHANGELOG'a ayrı ayrı yazılır, her platform kendi sırasında yayınlar.
@@ -66,8 +66,14 @@ Windows (WinUI, `src/`) ve Apple (SwiftUI — iPhone + Mac, `apple/`) **ayrı ko
    İş bilgisayarında GitHub'a yalnızca şirket VPN'i/ağı üzerinden erişilir.
 
 ## Sürüm çıkarma — Apple
-Aynı akış; farkları: sürüm Xcode'da `MARKETING_VERSION`, CHANGELOG `apple/CHANGELOG.md`, commit `Release Apple x.y.z`,
-tag `mac-vx.y.z`, Release adı `Antenim Yok x.y.z — Mac` (Mac uygulaması dosyası eklenir; iPhone Xcode'dan kurulur).
+Aynı akış; farkları: sürüm `apple/project.yml` → `MARKETING_VERSION` (**1.0.0 = ilk App Store sürümü**; iPhone + Mac aynı numara),
+CHANGELOG `apple/CHANGELOG.md`, commit `Release Apple x.y.z`, tag `mac-vx.y.z`. Dağıtım App Store'dur:
+1. `apple/scripts/archive.sh` iki platformun arşivini ve App Store Connect dışa aktarımını `apple/build/` altına üretir; **derleme numarası
+   (`CURRENT_PROJECT_VERSION`) her arşivde otomatik artar** (zaman damgası) ve mağazada aynı sürüm numarası için benzersiz olmalıdır.
+2. Ege yükler (Xcode Organizer / Transporter), App Store Connect'te "Yenilikler" metnini CHANGELOG'dan girer ve incelemeye gönderir.
+3. Onaydan sonra tag push edilir. Reddedilirse düzeltme aynı `MARKETING_VERSION` ile yeni derleme numarası olarak yüklenir
+   (kullanıcıya görünen değişiklik varsa PATCH).
+Mağaza metinleri: `apple/AppStore/tr/` (yalnızca Türkçe).
 
 ## Yapma
 - Tag'i taşıma/silme veya yayınlanmış bir sürümü yeniden kullanma; hata varsa yeni PATCH çıkar.
