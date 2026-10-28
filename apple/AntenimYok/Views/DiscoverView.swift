@@ -3,6 +3,7 @@ import SwiftUI
 
 struct DiscoverView: View {
     @Environment(AppModel.self) private var model
+    @FocusState private var searchFocused: Bool
 
     var body: some View {
         @Bindable var discover = model.discover
@@ -41,6 +42,12 @@ struct DiscoverView: View {
         }
         .navigationTitle("Keşfet")
         .searchable(text: $model.searchText, prompt: "Radyo ara")
+        .searchFocused($searchFocused)
+        .onChange(of: model.wantsSearchFocus, initial: true) { _, wants in
+            guard wants else { return }
+            searchFocused = true
+            model.wantsSearchFocus = false
+        }
         .safeAreaInset(edge: .top, spacing: 0) {
             if discover.phase == .loaded {
                 GenreBar(selection: $discover.genre)

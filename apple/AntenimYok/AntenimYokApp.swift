@@ -13,14 +13,18 @@ struct AntenimYokApp: App {
                 .preferredColorScheme(model.theme.colorScheme)
                 #if os(macOS)
                 .frame(minWidth: 520, minHeight: 420)
+                .modifier(PlaybackKeys())
                 #endif
         }
         #if os(macOS)
         .defaultSize(width: 880, height: 620)
         .commands {
-            CommandGroup(after: .toolbar) {
-                Button(model.player.isActive ? "Durdur" : "Çal") { model.togglePlayback() }
-                    .keyboardShortcut("p", modifiers: [.command, .option])
+            CommandGroup(after: .textEditing) {
+                Button("İstasyon Ara") { model.focusSearch() }
+                    .keyboardShortcut("f", modifiers: .command)
+            }
+            CommandMenu("Oynatma") {
+                PlaybackCommands(model: model)
             }
         }
         #endif

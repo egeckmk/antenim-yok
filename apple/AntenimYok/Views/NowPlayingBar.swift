@@ -100,7 +100,6 @@ struct PlayStopButton: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(.borderless)
-        .keyboardShortcut(.space, modifiers: [])
         .accessibilityLabel(model.player.isActive ? "Durdur" : "Çal")
         .help(model.player.isActive ? "Durdur" : "Çal")
     }
@@ -120,7 +119,6 @@ private struct VolumeControl: View {
                     .frame(width: 24)
             }
             .buttonStyle(.borderless)
-            .keyboardShortcut("m", modifiers: [])
             .accessibilityLabel(model.isMuted ? "Sesi aç" : "Sessize al")
             .help(model.isMuted ? "Sesi aç" : "Sessize al")
 

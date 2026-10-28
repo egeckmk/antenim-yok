@@ -86,6 +86,29 @@ final class AppModel {
         Task { await player.play(station) }
     }
 
+    // MARK: - Keyboard shortcuts
+
+    /// ⌘↑ / ⌘↓ change the volume by 5 %, like Ctrl+↑/↓ on Windows.
+    private static let volumeStep = 0.05
+
+    func changeVolume(by steps: Int) {
+        volume += Double(steps) * Self.volumeStep
+    }
+
+    /// ⌘1…9: the n-th favorite (0-based index).
+    func playFavorite(at index: Int) {
+        guard favorites.indices.contains(index) else { return }
+        play(favorites[index])
+    }
+
+    /// Set by ⌘F; the visible screen focuses its search field.
+    var wantsSearchFocus = false
+
+    func focusSearch() {
+        if section == .settings { section = .favorites }
+        wantsSearchFocus = true
+    }
+
     // MARK: - Favorites
 
     func isFavorite(_ station: Station) -> Bool {

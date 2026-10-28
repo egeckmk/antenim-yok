@@ -3,6 +3,7 @@ import SwiftUI
 
 struct FavoritesView: View {
     @Environment(AppModel.self) private var model
+    @FocusState private var searchFocused: Bool
 
     private let columns = [GridItem(.adaptive(minimum: 130, maximum: 180), spacing: 16)]
 
@@ -33,6 +34,12 @@ struct FavoritesView: View {
         }
         .navigationTitle("Favoriler")
         .searchable(text: $model.searchText, prompt: "Favorilerde ara")
+        .searchFocused($searchFocused)
+        .onChange(of: model.wantsSearchFocus, initial: true) { _, wants in
+            guard wants else { return }
+            searchFocused = true
+            model.wantsSearchFocus = false
+        }
     }
 }
 

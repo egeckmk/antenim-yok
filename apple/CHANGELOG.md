@@ -6,6 +6,13 @@ Biçim [Keep a Changelog](https://keepachangelog.com/tr-TR/1.1.0/), sürümleme 
 
 ## [Yayınlanmadı]
 
+### Eklendi
+- Mac'te Windows'taki klavye kısayolları: Boşluk = çal/durdur, ⌘1…9 = favoriler, ⌘F = ara, ⌘↑/↓ = ses, M (veya ⌥⌘↓) = sessiz;
+  yeni "Oynatma" menüsü (ilk 9 favori adıyla) ve Ayarlar'da kısayol listesi.
+
+### Düzeltildi
+- Mac'te arama kutusuna boşluk veya "m" yazınca çalma durması / sessize alınması.
+
 ## [0.1.0] - 2026-10-28
 
 İlk çalan sürüm (iPhone + Mac).

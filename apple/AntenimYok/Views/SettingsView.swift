@@ -21,6 +21,15 @@ struct SettingsView: View {
             } footer: {
                 Text("Destekleyen istasyonlarda çalan şarkı adı gösterilir. Açıkken yayına ikinci bir bağlantı açılır.")
             }
+            #if os(macOS)
+            Section("Klavye kısayolları") {
+                LabeledContent("Çal / durdur", value: "Boşluk")
+                LabeledContent("1.–9. favoriyi çal", value: "⌘1 … ⌘9")
+                LabeledContent("İstasyon ara", value: "⌘F")
+                LabeledContent("Sesi artır / azalt", value: "⌘↑ / ⌘↓")
+                LabeledContent("Sessiz", value: "M  ·  ⌥⌘↓")
+            }
+            #endif
             Section("Hakkında") {
                 LabeledContent("Sürüm", value: Self.version)
                 LabeledContent("Lisans", value: "GPL-3.0")
