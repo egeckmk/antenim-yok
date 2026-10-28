@@ -6,6 +6,9 @@ Biçim [Keep a Changelog](https://keepachangelog.com/tr-TR/1.1.0/), sürümleme 
 
 ## [Yayınlanmadı]
 
+### Değişti
+- Uygulama kimliği `InessSoftware.AntenimYok` oldu; eski sürümde kaydedilen favoriler ve ayarlar yeni uygulamaya taşınmaz (sıfırdan başlar).
+
 ### Eklendi
 - Ayarlar → Hakkında: gizlilik politikası ve destek bağlantıları.
 

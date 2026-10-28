@@ -1,6 +1,6 @@
 name: AntenimYok
 options:
-  bundleIdPrefix: com.egeckmk
+  bundleIdPrefix: InessSoftware
   deploymentTarget:
     iOS: "18.0"
     macOS: "15.0"
@@ -47,11 +47,13 @@ targets:
         com.apple.security.network.client: true
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.egeckmk.antenimyok
+        PRODUCT_BUNDLE_IDENTIFIER: InessSoftware.AntenimYok
         PRODUCT_NAME: AntenimYok
         INFOPLIST_KEY_CFBundleDisplayName: Antenim Yok
         ENABLE_PREVIEWS: YES
         ENABLE_HARDENED_RUNTIME: YES
+        # iPhone only on iOS (no iPad screenshots / layouts for 1.0).
+        TARGETED_DEVICE_FAMILY[sdk=iphone*]: "1"
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         CODE_SIGN_STYLE: Automatic
         SWIFT_STRICT_CONCURRENCY: complete

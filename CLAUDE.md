@@ -14,7 +14,7 @@ Reklamsız radyo uygulaması (public repo, GPL-3.0 + App Store ek izni). Dağıt
 | Platform | Teknoloji | Klasör |
 |---|---|---|
 | Windows 11 | .NET 10, WinUI 3 (Windows App SDK), C# | `src/` |
-| iPhone + Mac | SwiftUI Multiplatform | `apple/` (sonra) |
+| iPhone + Mac | SwiftUI Multiplatform (bundle id `InessSoftware.AntenimYok`, takım Local.xcconfig'te) | `apple/` |
 
 ## Windows mimarisi
 ```
