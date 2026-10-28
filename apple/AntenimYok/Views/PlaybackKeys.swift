@@ -29,7 +29,7 @@ struct PlaybackCommands: View {
 /// Space = play/stop and M = mute, like the Windows app. These are plain keys, so they must yield to
 /// text input: a `.keyboardShortcut` without modifiers would also fire while typing in the search field.
 struct PlaybackKeys: ViewModifier {
-    @Environment(AppModel.self) private var model
+    let model: AppModel
     @State private var monitor: Any?
 
     func body(content: Content) -> some View {

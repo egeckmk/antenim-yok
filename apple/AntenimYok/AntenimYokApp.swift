@@ -13,7 +13,7 @@ struct AntenimYokApp: App {
                 .preferredColorScheme(model.theme.colorScheme)
                 #if os(macOS)
                 .frame(minWidth: 520, minHeight: 420)
-                .modifier(PlaybackKeys())
+                .modifier(PlaybackKeys(model: model))
                 #endif
         }
         #if os(macOS)
