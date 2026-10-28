@@ -61,7 +61,7 @@ Her sprint ≈ 1 akşam / 2–3 saat. Her sprint sonunda çalışan bir exe + k�
 - [x] **A2.1 Mac menü çubuğu:** `MenuBarExtra` (Windows tepsi menüsü gibi): favoriler (çalan işaretli, tıkla = çal),
       Çal/Durdur, Pencereyi göster, Çıkış. Pencere kapanınca çalma sürer (Ayarlar: "Kapatınca menü çubuğunda çalmaya devam et",
       varsayılan açık); kapalıysa son pencere kapanınca uygulama çıkar
-- [ ] **A2.2 Mac mini pencere:** küçük, her zaman üstte, yeniden boyutlanmaz; logo + ad, ⏮ ⏹ ⏭ (komşu favori), ses,
+- [x] **A2.2 Mac mini pencere:** küçük, her zaman üstte, yeniden boyutlanmaz; logo + ad, ⏮ ⏹ ⏭ (komşu favori), ses,
       ⤢ ana pencereye dön; Şimdi Çalıyor çubuğunda ⧉ düğmesi; konumu hatırlanır (WIREFRAME "Mini pencere")
 - [ ] **A2.3 Mac oturum açılışında başlat:** Ayarlar'da anahtar (`SMAppService.mainApp`); açılışta pencere açmadan menü çubuğunda başlar
 - [ ] **A2.4 iPhone ses yolu:** kulaklık/AirPods çıkınca çalma durur (route change), telefon/kesinti sonrası devam;

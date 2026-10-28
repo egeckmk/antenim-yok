@@ -32,6 +32,13 @@ struct AntenimYokApp: App {
             if phase != .active { model.flushSettings() }
         }
 
+        Window("Mini oynatıcı", id: MacWindow.mini) {
+            MiniPlayerView(model: model)
+                .environment(model)
+        }
+        .windowResizability(.contentSize)
+        .defaultLaunchBehavior(.suppressed)
+
         MenuBarExtra("Antenim Yok", systemImage: model.menuBarSymbol) {
             MenuBarContent(model: model)
         }

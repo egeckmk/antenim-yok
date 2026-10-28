@@ -29,6 +29,7 @@ struct NowPlayingBar: View {
 
                 #if os(macOS)
                 VolumeControl()
+                MiniPlayerButton()
                 #endif
                 PlayStopButton()
             }
@@ -106,6 +107,25 @@ struct PlayStopButton: View {
 }
 
 #if os(macOS)
+/// Switches to the mini player: opens it first, then closes the main window (so the app never has zero windows).
+private struct MiniPlayerButton: View {
+    @Environment(\.openWindow) private var openWindow
+    @Environment(\.dismissWindow) private var dismissWindow
+
+    var body: some View {
+        Button {
+            openWindow(id: MacWindow.mini)
+            dismissWindow(id: MacWindow.main)
+        } label: {
+            Image(systemName: "rectangle.on.rectangle")
+                .frame(width: 24)
+        }
+        .buttonStyle(.borderless)
+        .accessibilityLabel("Mini oynatıcıya geç")
+        .help("Mini oynatıcıya geç")
+    }
+}
+
 private struct VolumeControl: View {
     @Environment(AppModel.self) private var model
 
