@@ -18,6 +18,7 @@ Biçim [Keep a Changelog](https://keepachangelog.com/tr-TR/1.1.0/), sürümleme 
   yeni "Oynatma" menüsü (ilk 9 favori adıyla) ve Ayarlar'da kısayol listesi.
 
 ### Düzeltildi
+- iPhone'da çalarken Xcode'un "AVAudioSession Hang Risk" uyarısı: ses oturumu artık arayüzü bekletmeden açılıp kapanıyor; hızlı çal/durdur/çal sırası bozulmuyor.
 - Kilit ekranı / Denetim Merkezi kartında logo yokken (ya da logo yüklenemezken) kapak boş kalıyordu; artık istasyonun baş harfleri gösteriliyor.
 - iPhone'da kilit ekranında ve Denetim Merkezi'nde "Şimdi Çalıyor" kartının görünmemesi (sistem uygulamayı duraklatılmış sayıyordu).
 - Mac'te arama kutusuna boşluk veya "m" yazınca çalma durması / sessize alınması.

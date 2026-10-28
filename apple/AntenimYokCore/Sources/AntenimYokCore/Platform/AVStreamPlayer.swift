@@ -18,6 +18,7 @@ public final class AVStreamPlayer: StreamPlayer {
     }
 
     private let player = AVPlayer()
+    private let audioSession: AudioSessionCoordinator
     private var openWaiter: OpenWaiter?
     private var statusObservation: NSKeyValueObservation?
     private var timeControlObservation: NSKeyValueObservation?
@@ -26,7 +27,8 @@ public final class AVStreamPlayer: StreamPlayer {
     private var hasPlayed = false
     private var isInterrupted = false
 
-    public init() {
+    public init(audioSession: AudioSessionCoordinator = AudioSessionCoordinator(backend: SystemAudioSessionBackend())) {
+        self.audioSession = audioSession
         player.automaticallyWaitsToMinimizeStalling = true
         #if os(iOS)
         observeAudioSession()
@@ -35,7 +37,9 @@ public final class AVStreamPlayer: StreamPlayer {
 
     public func open(url: URL, type: StreamType) async throws {
         teardown()
-        activateAudioSession()
+        // The session must be active before the stream starts; this does not block the main thread.
+        await audioSession.activate()
+        try Task.checkCancellation()
 
         let item = AVPlayerItem(url: url)
         let waiter = OpenWaiter()
@@ -70,7 +74,7 @@ public final class AVStreamPlayer: StreamPlayer {
         teardown()
         player.pause()
         player.replaceCurrentItem(with: nil)
-        deactivateAudioSession()
+        audioSession.deactivate()
     }
 
     // MARK: - Opening
@@ -145,20 +149,6 @@ public final class AVStreamPlayer: StreamPlayer {
 
     // MARK: - Audio session (iOS)
 
-    private func activateAudioSession() {
-        #if os(iOS)
-        let session = AVAudioSession.sharedInstance()
-        try? session.setCategory(.playback, mode: .default)
-        try? session.setActive(true)
-        #endif
-    }
-
-    private func deactivateAudioSession() {
-        #if os(iOS)
-        try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
-        #endif
-    }
-
     #if os(iOS)
     private func observeAudioSession() {
         let center = NotificationCenter.default
@@ -200,8 +190,10 @@ public final class AVStreamPlayer: StreamPlayer {
         case .resume:
             isInterrupted = false
             if isOpen {
-                activateAudioSession()
-                player.play()
+                Task {
+                    await audioSession.activate()
+                    if isOpen { player.play() }
+                }
             }
         case .stop:
             isInterrupted = false
@@ -244,5 +236,27 @@ private final class OpenWaiter {
         guard let continuation else { return }
         self.continuation = nil
         continuation.resume(with: result)
+    }
+}
+
+/// `AVAudioSession` on iOS (category `.playback`, so audio continues in the background); nothing on the Mac.
+public struct SystemAudioSessionBackend: AudioSessionBackend {
+    public init() {}
+
+    public func configureCategory() {
+        #if os(iOS)
+        try? AVAudioSession.sharedInstance().setCategory(.playback, mode: .default)
+        #endif
+    }
+
+    public func setActive(_ active: Bool) {
+        #if os(iOS)
+        let session = AVAudioSession.sharedInstance()
+        if active {
+            try? session.setActive(true)
+        } else {
+            try? session.setActive(false, options: .notifyOthersOnDeactivation)
+        }
+        #endif
     }
 }
