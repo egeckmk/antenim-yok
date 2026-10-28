@@ -26,6 +26,7 @@ final class AppModel {
 
     @ObservationIgnored private let favoritesStore: FavoritesStore
     @ObservationIgnored private let settingsStore: SettingsStore
+    @ObservationIgnored private var nowPlaying: NowPlayingController?
 
     init() {
         let favoritesStore = FavoritesStore()
@@ -52,6 +53,7 @@ final class AppModel {
         self.discover = DiscoverModel(client: RadioBrowserClient(transport: transport))
 
         network.start { [weak player] in player?.notifyNetworkAvailable() }
+        nowPlaying = NowPlayingController(model: self)
     }
 
     // MARK: - Now playing
@@ -99,6 +101,14 @@ final class AppModel {
     func playFavorite(at index: Int) {
         guard favorites.indices.contains(index) else { return }
         play(favorites[index])
+    }
+
+    /// Next/previous track (media keys, Control Center): the neighbouring favorite, wrapping around.
+    /// Not playing a favorite: the first one.
+    func playAdjacentFavorite(_ offset: Int) {
+        if let station = FavoriteNavigation.adjacent(in: favorites, currentId: nowPlayingStation?.id, offset: offset) {
+            play(station)
+        }
     }
 
     /// Set by ⌘F; the visible screen focuses its search field.

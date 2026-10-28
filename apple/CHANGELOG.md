@@ -7,6 +7,7 @@ Biçim [Keep a Changelog](https://keepachangelog.com/tr-TR/1.1.0/), sürümleme 
 ## [Yayınlanmadı]
 
 ### Eklendi
+- Sistem "Şimdi Çalıyor": Mac'te Denetim Merkezi kartı ve medya tuşları, iPhone'da kilit ekranı ve AirPods; çal/durdur ve sonraki/önceki favori, şarkı adı, istasyon adı ve logo gösterilir.
 - Mac'te Windows'taki klavye kısayolları: Boşluk = çal/durdur, ⌘1…9 = favoriler, ⌘F = ara, ⌘↑/↓ = ses, M (veya ⌥⌘↓) = sessiz;
   yeni "Oynatma" menüsü (ilk 9 favori adıyla) ve Ayarlar'da kısayol listesi.
 
