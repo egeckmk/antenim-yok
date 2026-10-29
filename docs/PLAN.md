@@ -103,6 +103,6 @@ Her sprint ≈ 1 akşam / 2–3 saat. Her sprint sonunda çalışan bir exe + k�
 - [x] **S4 Mağaza içeriği:** `apple/AppStore/tr/` (ad, alt başlık, açıklama, anahtar kelimeler, promosyon metni, yenilikler,
       inceleme notu — 5.2.3 için Radio Browser açıklaması, App Privacy = "Veri toplanmıyor", yaş derecesi, kategori Müzik);
       ekran görüntüleri: iPhone 6.9" + Mac, açık/koyu, DEBUG demo modu ile otomatik
-- [ ] **S5 Arşiv + 1.0.0:** `apple/scripts/archive.sh` (iOS + macOS arşivi, App Store Connect için dışa aktarma),
+- [x] **S5 Arşiv + 1.0.0:** `apple/scripts/archive.sh` (iOS + macOS arşivi, App Store Connect için dışa aktarma),
       `MARKETING_VERSION` 1.0.0, CHANGELOG `[1.0.0]`, `Release Apple 1.0.0`, yerel `mac-v1.0.0` tag'i. **Yükleme, push, inceleme
       gönderimi yok** — bunları Ege yapar (Xcode Organizer / App Store Connect)

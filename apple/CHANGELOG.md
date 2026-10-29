@@ -6,6 +6,10 @@ Biçim [Keep a Changelog](https://keepachangelog.com/tr-TR/1.1.0/), sürümleme 
 
 ## [Yayınlanmadı]
 
+## [1.0.0] - 2026-10-30
+
+İlk App Store sürümü (iPhone + Mac, Türkçe). 0.2.0'dan beri:
+
 ### Değişti
 - Uygulama kimliği `InessSoftware.AntenimYok` oldu; eski sürümde kaydedilen favoriler ve ayarlar yeni uygulamaya taşınmaz (sıfırdan başlar).
 
@@ -41,6 +45,7 @@ Biçim [Keep a Changelog](https://keepachangelog.com/tr-TR/1.1.0/), sürümleme 
 - iPhone'da arka planda ve ekran kapalıyken çalma.
 - Ayarlar: tema (Sistem / Açık / Koyu), şarkı adlarını gösterme.
 
-[Yayınlanmadı]: https://github.com/egeckmk/antenim-yok/compare/mac-v0.2.0...HEAD
+[Yayınlanmadı]: https://github.com/egeckmk/antenim-yok/compare/mac-v1.0.0...HEAD
+[1.0.0]: https://github.com/egeckmk/antenim-yok/compare/mac-v0.2.0...mac-v1.0.0
 [0.2.0]: https://github.com/egeckmk/antenim-yok/releases/tag/mac-v0.2.0
 [0.1.0]: https://github.com/egeckmk/antenim-yok/commit/a03719c
