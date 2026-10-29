@@ -9,7 +9,6 @@ KEŞFET
 Türkiye'den yüzlerce radyoyu ada göre ara, türe göre süz: Pop, Rock, Türkü / Halk, Türk Sanat, Arabesk, Nostalji, Caz, Klasik, Elektronik, Haber / Konuşma, Dini. Beğendiğini yıldızla favorilere ekle.
 
 KESİNTİSİZ DİNLEME
-• Bir yayın açılmazsa radyonun yedek yayınına otomatik geçer.
 • Bağlantı koparsa kendi kendine yeniden bağlanır; internet geri gelince hemen devam eder.
 • Uygulamayı kapatsan da ses çalmaya devam eder (iPhone'da arka planda ve ekran kapalıyken).
 
